@@ -54,6 +54,7 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         user.setPhone(userDto.getPhone());
 
+        userRepository.save(user);
         UserResponseDto userResponseDto = modelMapper.map(user, UserResponseDto.class);
 
         return userResponseDto;
