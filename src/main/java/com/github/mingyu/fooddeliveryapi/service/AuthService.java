@@ -3,6 +3,7 @@ package com.github.mingyu.fooddeliveryapi.service;
 import com.github.mingyu.fooddeliveryapi.dto.auth.AuthRequestDto;
 import com.github.mingyu.fooddeliveryapi.dto.auth.AuthResponseDto;
 import com.github.mingyu.fooddeliveryapi.security.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +31,13 @@ public class AuthService {
 
         String token = jwtTokenProvider.createToken(authRequestDto.getEmail(), roles);
         return new AuthResponseDto(token, authRequestDto.getEmail());
+    }
+
+    public void logout(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null) {
+            jwtTokenProvider.invalidateToken(token);
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.github.mingyu.fooddeliveryapi.controller;
 import com.github.mingyu.fooddeliveryapi.dto.auth.AuthRequestDto;
 import com.github.mingyu.fooddeliveryapi.dto.auth.AuthResponseDto;
 import com.github.mingyu.fooddeliveryapi.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,5 +23,11 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // 로그아웃 처리
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        authService.logout(request);
+        return ResponseEntity.noContent().build();
+    }
 
 }
