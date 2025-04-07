@@ -3,6 +3,7 @@ package com.github.mingyu.fooddeliveryapi.controller;
 import com.github.mingyu.fooddeliveryapi.dto.auth.AuthRequestDto;
 import com.github.mingyu.fooddeliveryapi.dto.auth.AuthResponseDto;
 import com.github.mingyu.fooddeliveryapi.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,14 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // 로그인 처리
+    @Operation(summary = "로그인", description = "로그인")
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody AuthRequestDto authRequestDto) {
         AuthResponseDto response = authService.login(authRequestDto);
         return ResponseEntity.ok(response);
     }
 
-    // 로그아웃 처리
+    @Operation(summary = "로그아웃", description = "로그아웃")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         authService.logout(request);

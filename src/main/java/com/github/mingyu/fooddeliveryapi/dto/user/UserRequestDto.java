@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "회원 가입 또는 수정 요청 DTO")
+@Schema(description = "회원 가입 또는 수정 요청")
 public class UserRequestDto {
 
     @Schema(description = "이름", example = "홍길동")
@@ -21,7 +21,7 @@ public class UserRequestDto {
     @Schema(description = "휴대폰 번호", example = "010-1234-5678")
     private String phone;
 
-    @Schema(description = "역할", example = "ROLE_USER")
+    @Schema(description = "역할", example = "USER")
     private String role;
 
     @Schema(description = "현재 주소", example = "서울특별시 강남구")
