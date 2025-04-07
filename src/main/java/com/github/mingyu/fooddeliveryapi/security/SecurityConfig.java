@@ -38,6 +38,7 @@ public class SecurityConfig {
         return http
                 .httpBasic(AbstractHttpConfigurer::disable)                             // 기본 HTTP 인증 방식 비활성화
                 .csrf(AbstractHttpConfigurer::disable)                                  // CSRF 보호 비활성화
+                .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 관리 정책 설정 (세션 사용 안 함)
                 )

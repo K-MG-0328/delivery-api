@@ -113,6 +113,7 @@ public class JwtTokenProvider {
     // 토큰 만료시간 조회
     private long getExpiration(String token) {
         return Jwts.parser()
+                .setSigningKey(key)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
