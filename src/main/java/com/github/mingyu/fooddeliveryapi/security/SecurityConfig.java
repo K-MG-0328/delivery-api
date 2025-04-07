@@ -1,5 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,11 +14,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -33,7 +35,12 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 세션 관리 정책 설정 (세션 사용 안 함)
                 )
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/login", "/user").permitAll()
+                        auth.requestMatchers("/login",
+                                        "/user",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**",
+                                        "/swagger-resources/**",
+                                        "/webjars/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
