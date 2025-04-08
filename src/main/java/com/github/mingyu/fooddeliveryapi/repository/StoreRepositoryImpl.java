@@ -5,6 +5,7 @@ import com.github.mingyu.fooddeliveryapi.entity.Store;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
 
         return queryFactory.selectFrom(store)
                 .where(
-                        name != null ? store.name.containsIgnoreCase(name) : null,
-                        category != null ? store.category.eq(category) : null,
-                        userAddress != null ? store.deliveryAreas.contains(userAddress) : null
+                        StringUtils.hasText(name) ? store.name.containsIgnoreCase(name) : null,
+                        StringUtils.hasText(category) ? store.category.eq(category) : null,
+                        StringUtils.hasText(userAddress) ? store.deliveryAreas.contains(userAddress) : null
                 )
                 .fetch();
     }
