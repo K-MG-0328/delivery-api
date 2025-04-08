@@ -1,5 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.entity;
 
+import com.github.mingyu.fooddeliveryapi.enums.StoreStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,8 +50,9 @@ public class Store {
     @Column(nullable = false)
     private double ratings;                 // 가게 평점
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;                  // 가게 상태 (예: OPEN, CLOSE)
+    private StoreStatus status;             // 가게 상태 (예: ACTIVE, INACTIVE..)
 
     @Column(nullable = false)
     private String deliveryAreas;           // 배달 지역

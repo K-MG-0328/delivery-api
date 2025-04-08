@@ -3,6 +3,7 @@ package com.github.mingyu.fooddeliveryapi.service;
 import com.github.mingyu.fooddeliveryapi.dto.user.UserRequestDto;
 import com.github.mingyu.fooddeliveryapi.dto.user.UserResponseDto;
 import com.github.mingyu.fooddeliveryapi.entity.User;
+import com.github.mingyu.fooddeliveryapi.enums.UserStatus;
 import com.github.mingyu.fooddeliveryapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -71,7 +72,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
-        user.setStatus("DELETED");
+        user.setStatus(UserStatus.DELETED);
         userRepository.save(user);
     }
 }

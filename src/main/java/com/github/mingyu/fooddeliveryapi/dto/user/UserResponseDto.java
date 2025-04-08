@@ -1,5 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.dto.user;
 
+import com.github.mingyu.fooddeliveryapi.enums.UserRole;
+import com.github.mingyu.fooddeliveryapi.enums.UserStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,11 +22,11 @@ public class UserResponseDto {
     private String phone;
 
     @Schema(description = "역할", example = "USER")
-    private String role;
+    private UserRole role;
 
     @Schema(description = "현재 주소", example = "서울특별시 강남구")
     private String currentAddress;
 
     @Schema(description = "상태", example = "ACTIVE")
-    private String status;
+    private UserStatus status;
 }

@@ -4,6 +4,7 @@ import com.github.mingyu.fooddeliveryapi.dto.auth.AuthRequestDto;
 import com.github.mingyu.fooddeliveryapi.dto.auth.AuthResponseDto;
 import com.github.mingyu.fooddeliveryapi.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "로그인 API", description = "로그인 API")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
