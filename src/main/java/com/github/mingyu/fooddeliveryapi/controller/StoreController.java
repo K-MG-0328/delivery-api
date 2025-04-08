@@ -45,7 +45,7 @@ public class StoreController {
     }
 
     @GetMapping("/store/search")
-    @Operation(summary = "가게 검색", description = "이름 또는 카테고리로 가게를 검색합니다.")
+    @Operation(summary = "가게 목록 조회", description = "이름 또는 카테고리로 가게를 조회합니다.")
     public ResponseEntity<StoreListResponseDto> searchStores(@ModelAttribute StoreSearchCondition request) {
         StoreListResponseDto stores = storeService.searchStores(request);
         return ResponseEntity.ok(stores);
