@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.dto.store;
 
-import com.github.mingyu.fooddeliveryapi.entity.Menu;
+import com.github.mingyu.fooddeliveryapi.dto.menu.MenuResponseDto;
 import com.github.mingyu.fooddeliveryapi.enums.StoreStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -42,7 +42,7 @@ public class StoreResponseDto {
     @Schema(description = "가게 수정일", example = "2025-04-08T11:00:00")
     private LocalDateTime modifiedDate;
     @Schema(description = "메뉴 목록")
-    private List<Menu> menus = new ArrayList<>();
+    private List<MenuResponseDto> menus = new ArrayList<>();
     @Schema(description = "배달 지역", example = "강남구, 서초구")
     private String deliveryAreas;
 
