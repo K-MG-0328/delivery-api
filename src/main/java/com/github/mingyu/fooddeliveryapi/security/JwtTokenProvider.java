@@ -1,5 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.security;
 
+import com.github.mingyu.fooddeliveryapi.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -12,6 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -26,6 +29,8 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final RedisTemplate<String, String> redisTemplate;
+    private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     @Value("${secret.key}")
     private String secretKey;
@@ -41,8 +46,12 @@ public class JwtTokenProvider {
     // JWT 생성
     public String createToken(String email, List<String> roles) {
 
+        com.github.mingyu.fooddeliveryapi.entity.User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수가 없습니다."));
+
+        userDetailsService.loadUserByUsername(email);
         Claims claims = Jwts.claims()
                 .subject(email)
+                .add("userId", user.getUserId())
                 .add("roles", roles)
                 .build();
 
@@ -70,6 +79,17 @@ public class JwtTokenProvider {
     // 토큰에서 유저 이메일 추출
     public String getUsername(String token) {
         return Jwts.parser().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    // 토큰에서 유저 아이디 추출
+    public Long getUserId(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("userId", Long.class);
     }
 
     // 토큰에서 권한(roles) 추출
