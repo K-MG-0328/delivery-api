@@ -9,5 +9,8 @@ public enum MenuOptionStatus {
     ACTIVE,
 
     @Schema(description = "옵션 비활성화됨")
-    INACTIVE
+    INACTIVE,
+
+    @Schema(description = "옵션 삭제")
+    DELETED
 }
