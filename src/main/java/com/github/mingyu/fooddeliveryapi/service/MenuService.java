@@ -4,6 +4,7 @@ import com.github.mingyu.fooddeliveryapi.dto.menu.*;
 import com.github.mingyu.fooddeliveryapi.entity.Menu;
 import com.github.mingyu.fooddeliveryapi.entity.MenuOption;
 import com.github.mingyu.fooddeliveryapi.entity.Store;
+import com.github.mingyu.fooddeliveryapi.enums.MenuStatus;
 import com.github.mingyu.fooddeliveryapi.mapper.MenuMapper;
 import com.github.mingyu.fooddeliveryapi.mapper.MenuOptionMapper;
 import com.github.mingyu.fooddeliveryapi.repository.MenuOptionRepository;
@@ -30,6 +31,7 @@ public class MenuService {
     public void addMenu(MenuCreateRequestDto request) {
         Store store = storeRepository.findById(request.getStoreId()).orElseThrow(() ->  new RuntimeException("가게를 찾을 수 없습니다."));
         Menu menu = menuMapper.toEntity(request);
+        menu.setStatus(MenuStatus.ACTIVE);
         menu.setStore(store);
         List<MenuOption> options = new ArrayList<>();
 
@@ -44,7 +46,10 @@ public class MenuService {
     }
 
     public void deleteMenu(Long menuId) {
-        menuRepository.deleteById(menuId);
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
+        menu.setStatus(MenuStatus.DELETED);
+        menuRepository.save(menu);
     }
 
     public void updateMenu(Long menuId, MenuUpdateRequestDto request) {
