@@ -1,5 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.entity;
 
+import com.github.mingyu.fooddeliveryapi.enums.UserRole;
+import com.github.mingyu.fooddeliveryapi.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,14 +35,16 @@ public class User {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
-    private String role;
+    private UserRole role;
 
     @Column(nullable = true, length = 255)
     private String currentAddress;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 255)
-    private String status;
+    private UserStatus status;
 
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
