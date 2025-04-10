@@ -17,8 +17,4 @@ public class CartItem {
     private List<Long> menuOptionIds;
     private int quantity;
     private int price;
-
-    public int getTotalPrice() {
-        return quantity * price;
-    }
 }

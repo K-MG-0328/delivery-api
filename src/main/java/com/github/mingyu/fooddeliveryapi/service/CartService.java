@@ -77,7 +77,7 @@ public class CartService {
         String cartJson = redisTemplate.opsForValue().get(key);
 
         if (cartJson == null) {
-            return new CartResponseDto();
+            return CartResponseDto.empty(userId);
         }
 
         try {

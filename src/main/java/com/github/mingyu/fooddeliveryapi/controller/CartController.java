@@ -24,8 +24,8 @@ public class CartController {
 
     @Operation(summary = "장바구니 조회", description = "현재 사용자의 장바구니 정보를 조회합니다.")
     @GetMapping("/cart/{userId}")
-    public ResponseEntity<CartResponseDto> getCart(@PathVariable Long UserId) {
-        CartResponseDto cart = cartService.getCart(UserId);
+    public ResponseEntity<CartResponseDto> getCart(@PathVariable Long userId) {
+        CartResponseDto cart = cartService.getCart(userId);
         return ResponseEntity.ok(cart);
     }
 

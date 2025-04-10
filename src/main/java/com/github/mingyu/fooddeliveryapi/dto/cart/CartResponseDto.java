@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,4 +23,13 @@ public class CartResponseDto {
 
     @Schema(description = "장바구니 총 금액", example = "23000")
     private int totalPrice;
+
+    public static CartResponseDto empty(Long userId) {
+        CartResponseDto dto = new CartResponseDto();
+        dto.setUserId(userId);
+        dto.setStoreId(null);
+        dto.setItems(new ArrayList<>());
+        dto.setTotalPrice(0);
+        return dto;
+    }
 }
