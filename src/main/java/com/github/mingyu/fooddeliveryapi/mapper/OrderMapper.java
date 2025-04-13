@@ -1,6 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.mapper;
 
-import com.github.mingyu.fooddeliveryapi.dto.order.OrderResponseDto;
+import com.github.mingyu.fooddeliveryapi.dto.order.OrderCreateResponseDto;
+import com.github.mingyu.fooddeliveryapi.dto.order.OrderDetailResponseDto;
 import com.github.mingyu.fooddeliveryapi.entity.MenuOption;
 import com.github.mingyu.fooddeliveryapi.entity.Order;
 import com.github.mingyu.fooddeliveryapi.entity.OrderItemOption;
@@ -14,5 +15,8 @@ public interface OrderMapper {
     @Mapping(target = "orderItem", ignore = true)
     OrderItemOption convertFrom(MenuOption option);
 
-    OrderResponseDto toDto(Order order);
+    OrderCreateResponseDto toOrderCreateResponseDto(Order order);
+
+    OrderDetailResponseDto toOrderDetailResponseDto(Order order);
+
 }
