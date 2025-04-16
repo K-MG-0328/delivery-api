@@ -33,6 +33,7 @@ public class Menu {
     @Column(nullable = false)
     private int price;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MenuStatus status;
 

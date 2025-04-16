@@ -41,6 +41,7 @@ public class Order {
     @Column(nullable = true, length = 255)
     private String requests;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 255)
     private OrderStatus status;
 
