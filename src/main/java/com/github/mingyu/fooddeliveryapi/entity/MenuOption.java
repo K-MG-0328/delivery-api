@@ -1,7 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.entity;
 
-import com.github.mingyu.fooddeliveryapi.enums.UserRole;
-import com.github.mingyu.fooddeliveryapi.enums.UserStatus;
+import com.github.mingyu.fooddeliveryapi.enums.MenuOptionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,41 +9,31 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
 @Entity
-@Table(name = "users")
+@Table(name = "menu_options")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class MenuOption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long menuOptionId;
 
-    @Column(nullable = false, length = 255)
-    private String password;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menuId", nullable = false)
+    private Menu menu;
 
-    @Column(nullable = false, length = 100, unique = true)
-    private String email;
+    @Column(name = "option_name", nullable = false)
+    private String option;
 
-    @Column(nullable = false, length = 50)
-    private String phone;
-
-    @Column(nullable = false, length = 100)
-    private String name;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private UserRole role;
-
-    @Column(nullable = true, length = 255)
-    private String currentAddress;
+    @Column(nullable = false)
+    private int price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 255)
-    private UserStatus status;
+    private MenuOptionStatus status;
 
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
