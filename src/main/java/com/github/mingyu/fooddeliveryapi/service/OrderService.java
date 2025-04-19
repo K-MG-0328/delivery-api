@@ -9,6 +9,8 @@ import com.github.mingyu.fooddeliveryapi.dto.store.StoreResponseDto;
 import com.github.mingyu.fooddeliveryapi.dto.user.UserResponseDto;
 import com.github.mingyu.fooddeliveryapi.entity.*;
 import com.github.mingyu.fooddeliveryapi.enums.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.event.dto.OrderPaidEvent;
+import com.github.mingyu.fooddeliveryapi.event.producer.OrderEventProducer;
 import com.github.mingyu.fooddeliveryapi.mapper.OrderMapper;
 import com.github.mingyu.fooddeliveryapi.mapper.StoreMapper;
 import com.github.mingyu.fooddeliveryapi.mapper.UserMapper;
@@ -39,6 +41,8 @@ public class OrderService {
 
     private final MenuRepository menuRepository;
     private final MenuOptionRepository menuOptionRepository;
+
+    private final OrderEventProducer orderEventProducer;
 
     public OrderCreateResponseDto createOrder(OrderCreateRequestDto request) {
         String key = "cart:" + request.getUserId();
@@ -130,6 +134,17 @@ public class OrderService {
         order.setStatus(OrderStatus.PAID);
         order.setPaymentMethod(request.getPaymentMethod());
         orderRepository.save(order);
+
+        // 결제 이후 이벤트 발행
+        OrderPaidEvent event = new OrderPaidEvent(
+                order.getOrderId(),
+                order.getUser().getUserId(),
+                order.getStore().getStoreId(),
+                order.getTotalPrice(),
+                order.getCreatedDate().toString(),
+                order.getUser().getCurrentAddress()
+        );
+        orderEventProducer.sendOrderPaidEvent(event);
     }
 
     public OrderListResponseDto getUserOrders(Long userId) {
