@@ -12,8 +12,10 @@ import com.github.mingyu.fooddeliveryapi.repository.MenuRepository;
 import com.github.mingyu.fooddeliveryapi.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +30,7 @@ public class MenuService {
     private final MenuMapper menuMapper;
     private final MenuOptionMapper menuOptionMapper;
 
+    @Transactional
     public void addMenu(MenuCreateRequestDto request) {
         Store store = storeRepository.findById(request.getStoreId()).orElseThrow(() ->  new RuntimeException("가게를 찾을 수 없습니다."));
         Menu menu = menuMapper.toEntity(request);
@@ -41,17 +44,19 @@ public class MenuService {
             options.add(menuOption);
         }
 
-        menu.setMenuOptions(options);
         menuRepository.save(menu);
+        menuOptionRepository.saveAll(options);
     }
 
+    @Transactional
     public void deleteMenu(Long menuId) {
-        Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
-        menu.setStatus(MenuStatus.DELETED);
-        menuRepository.save(menu);
+        List<MenuOption> options = menuOptionRepository.findByMenu_MenuId(menuId);
+
+        menuOptionRepository.deleteAll(options);
+        menuRepository.deleteById(menuId);
     }
 
+    @Transactional
     public void updateMenu(Long menuId, MenuUpdateRequestDto request) {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
@@ -60,10 +65,13 @@ public class MenuService {
         menu.setPrice(request.getPrice());
         menu.setStatus(request.getStatus());
 
-        Map<Long, MenuOption> currentOptionsById = menu.getMenuOptions().stream()
+        menuRepository.save(menu);
+
+        List<MenuOption> menuOptions = menuOptionRepository.findByMenu_MenuId(menuId);
+        Map<Long, MenuOption> currentOptionsById = menuOptions.stream()
                 .collect(Collectors.toMap(MenuOption::getMenuOptionId, o -> o));
 
-        List<MenuOption> updatedOptions = new ArrayList<>();
+        List<MenuOption> Options = new ArrayList<>();
 
         for (MenuOptionUpdateRequestDto dto : request.getOptions()) {
             if (dto.getMenuOptionId() != null && currentOptionsById.containsKey(dto.getMenuOptionId())) {
@@ -72,7 +80,7 @@ public class MenuService {
                 option.setOption(dto.getOption());
                 option.setPrice(dto.getPrice());
                 option.setStatus(dto.getStatus());
-                updatedOptions.add(option);
+                Options.add(option);
             } else {
                 // 새 옵션 추가
                 MenuOption option = new MenuOption();
@@ -80,21 +88,44 @@ public class MenuService {
                 option.setPrice(dto.getPrice());
                 option.setStatus(dto.getStatus());
                 option.setMenu(menu);
-                updatedOptions.add(option);
+                Options.add(option);
             }
         }
 
-        menu.getMenuOptions().clear();
-        menu.getMenuOptions().addAll(updatedOptions);
-
-        menuRepository.save(menu);
+        menuOptionRepository.saveAll(Options);
     }
 
     public MenuResponseDto getMenu(Long menuId) {
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
         List<MenuOption> options = menuOptionRepository.findByMenu(menu);
-        menu.setMenuOptions(options);
-        MenuResponseDto dto = menuMapper.toDto(menu);
-        return dto;
+
+        MenuResponseDto menuResponseDto = menuMapper.toDto(menu);
+        List<MenuOptionResponseDto> menuOptionResponseDtos = menuOptionMapper.toDtoList(options);
+        menuResponseDto.setOptions(menuOptionResponseDtos);
+
+        return menuResponseDto;
+    }
+
+    public MenuListResponseDto searchMenus(MenuSearchCondition request) {
+        List<Menu> menus = menuRepository.findByStore_StoreId(request.getStoreId());
+        List<MenuOption> allOptions = menuOptionRepository.findByMenuIn(menus);
+
+        // 옵션을 MenuId 기준으로 묶기
+        Map<Long, List<MenuOption>> optionsByMenuId = allOptions.stream()
+                .collect(Collectors.groupingBy(o -> o.getMenu().getMenuId()));
+
+        List<MenuResponseDto> result = new ArrayList<>();
+
+        for (Menu menu : menus) {
+            MenuResponseDto dto = menuMapper.toDto(menu);
+
+            List<MenuOption> options = optionsByMenuId.getOrDefault(menu.getMenuId(), Collections.emptyList());
+            List<MenuOptionResponseDto> optionDtos = menuOptionMapper.toDtoList(options);
+
+            dto.setOptions(optionDtos);
+            result.add(dto);
+        }
+
+        return new MenuListResponseDto(result);
     }
 }

@@ -1,14 +1,12 @@
 package com.github.mingyu.fooddeliveryapi.controller;
 
-import com.github.mingyu.fooddeliveryapi.dto.menu.MenuCreateRequestDto;
-import com.github.mingyu.fooddeliveryapi.dto.menu.MenuUpdateRequestDto;
-import com.github.mingyu.fooddeliveryapi.dto.menu.MenuResponseDto;
+import com.github.mingyu.fooddeliveryapi.dto.menu.*;
 import com.github.mingyu.fooddeliveryapi.service.MenuService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,5 +40,12 @@ public class MenuController {
     @GetMapping("/menu/{menuId}")
     public ResponseEntity<MenuResponseDto> getMenu(@PathVariable Long menuId) {
         return ResponseEntity.ok(menuService.getMenu(menuId));
+    }
+
+    @Operation(summary = "메뉴 목록 조회", description = "가게 메뉴 목록를 조회합니다.")
+    @GetMapping("/menu/search")
+    public ResponseEntity<MenuListResponseDto> searchMenus(@ModelAttribute MenuSearchCondition request) {
+        MenuListResponseDto menus = menuService.searchMenus(request);
+        return ResponseEntity.ok(menus);
     }
 }
