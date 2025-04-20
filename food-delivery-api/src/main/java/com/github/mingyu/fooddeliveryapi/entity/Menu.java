@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "menu")
@@ -39,9 +37,6 @@ public class Menu {
 
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuOption> menuOptions = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

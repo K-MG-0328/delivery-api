@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "stores")
@@ -60,9 +58,6 @@ public class Store {
     private LocalDateTime createdDate;      // 생성일시
 
     private LocalDateTime modifiedDate;     // 수정일시
-
-    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Menu> menus = new ArrayList<>(); // 메뉴 목록
 
     @PrePersist
     protected void onCreate() {

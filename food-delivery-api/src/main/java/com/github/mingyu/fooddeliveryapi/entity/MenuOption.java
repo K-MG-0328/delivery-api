@@ -25,7 +25,7 @@ public class MenuOption {
     @JoinColumn(name = "menuId", nullable = false)
     private Menu menu;
 
-    @Column(name = "option_name", nullable = false)
+    @Column(name = "optionName", nullable = false)
     private String option;
 
     @Column(nullable = false)
