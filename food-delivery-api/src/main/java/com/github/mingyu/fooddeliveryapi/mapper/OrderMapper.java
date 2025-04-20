@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 public interface OrderMapper {
 
     @Mapping(source = "option", target = "optionName")
-    @Mapping(target = "orderItem", ignore = true)
+    @Mapping(target = "orderItem", ignore = true) //해당 필드를 매핑에서 제외
     OrderItemOption convertFrom(MenuOption option);
 
     OrderCreateResponseDto toOrderCreateResponseDto(Order order);

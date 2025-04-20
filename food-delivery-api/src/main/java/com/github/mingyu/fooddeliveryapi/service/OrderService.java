@@ -18,9 +18,9 @@ import com.github.mingyu.fooddeliveryapi.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +33,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
+    private final OrderItemRepository orderItemRepository;
+    private final OrderItemOptionRepository orderItemOptionRepository;
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -44,6 +47,7 @@ public class OrderService {
 
     private final OrderEventProducer orderEventProducer;
 
+    @Transactional
     public OrderCreateResponseDto createOrder(OrderCreateRequestDto request) {
         String key = "cart:" + request.getUserId();
         String cartJson = redisTemplate.opsForValue().get(key);
@@ -57,6 +61,9 @@ public class OrderService {
         Store store = storeRepository.findById(request.getStoreId()).orElseThrow(() -> new RuntimeException("가게를 찾을 수 없습니다."));
 
         Order order = new Order();
+        List<OrderItem> orderItems = new ArrayList<>();
+        List<OrderItemOption> oiOptions = new ArrayList<>();
+
         try{
             order.setStatus(OrderStatus.CREATED);
             order.setUser(user);
@@ -64,47 +71,59 @@ public class OrderService {
 
             //장바구니 정보
             Cart cart = objectMapper.readValue(cartJson, Cart.class);
-            List<CartItem> cartItems = cart.getItems();     // 장바구니
-            List<OrderItem> orderItems = new ArrayList<>(); // 주문목록
 
-            int menuOrderPriceSum = 0;       //주문 메뉴 총 가격
-            int menuOrderOptionPriceSum = 0; //주문 메뉴 옵션 총 가격
+            //메뉴아이디 가져오기
+            Set<Long> menuIds   = cart.getItems().stream()
+                    .map(CartItem::getMenuId)
+                    .collect(Collectors.toSet());
+            //메뉴 옵션 아이디 가져오기
+            Set<Long> optionIds = cart.getItems().stream()
+                    .flatMap(ci -> ci.getMenuOptionIds().stream())
+                    .collect(Collectors.toSet());
 
-            for(CartItem cartItem : cartItems){
-                //메뉴 정보
-                Menu menu = menuRepository.getById(cartItem.getMenuId());
+            // 메뉴 Map
+            Map<Long, Menu> menusById   = menuRepository.findByMenuIdIn(menuIds)
+                    .stream().collect(Collectors.toMap(Menu::getMenuId, m -> m));
+            // 메뉴옵션 Map
+            Map<Long, MenuOption> optionsById = menuOptionRepository.findByMenuOptionIdIn(optionIds)
+                    .stream().collect(Collectors.toMap(MenuOption::getMenuOptionId, o -> o));
 
-                //주문 정보
-                OrderItem orderItem = new OrderItem();
-                orderItem.setOrder(order);
-                orderItem.setMenu(menu);
-                orderItem.setQuantity(cartItem.getQuantity());
+            int totalMenuPrice = 0;       //주문 메뉴 총 가격
+            int totalOptionPrice = 0;     //주문 메뉴 옵션 총 가격
 
-                menuOrderPriceSum += cartItem.getPrice();
-                orderItem.setPrice(cartItem.getPrice());
+            for (CartItem ci : cart.getItems()) {
+                Menu menu = menusById.get(ci.getMenuId());
+                if (menu == null) throw new RuntimeException("메뉴 없음");
 
-                //메뉴 옵션 정보
-                List<Long> menuOptions = cartItem.getMenuOptionIds();
-                List<OrderItemOption> orderOptions = new ArrayList<>();
-                for(Long optionId : menuOptions){
+                OrderItem oi = new OrderItem();
+                oi.setOrder(order);
+                oi.setMenu(menu);
+                oi.setPrice(ci.getPrice());
+                oi.setQuantity(ci.getQuantity());
 
-                    MenuOption menuOption = menuOptionRepository.findById(optionId).orElseThrow(() -> new RuntimeException("존재하지 않는 메뉴 옵션입니다."));
+                totalMenuPrice += ci.getPrice() * ci.getQuantity();
 
-                    OrderItemOption orderOption =  orderMapper.convertFrom(menuOption);
-                    orderOption.setOrderItem(orderItem);
-                    orderOptions.add(orderOption);
+                for (Long optId : ci.getMenuOptionIds()) {
+                    MenuOption mo = optionsById.get(optId);
+                    if (mo == null) throw new RuntimeException("옵션 없음");
 
-                    menuOrderOptionPriceSum += orderOption.getPrice();
+                    OrderItemOption oio = orderMapper.convertFrom(mo);
+                    oio.setOrderItem(oi);
+                    oiOptions.add(oio);
+
+                    totalOptionPrice += oio.getPrice() * ci.getQuantity();
                 }
 
-                orderItem.setItemOptions(orderOptions);  //옵션 목록 저장
-                orderItems.add(orderItem); //주문 목록 저장
+                orderItems.add(oi);
             }
 
-            order.setTotalPrice(menuOrderPriceSum + menuOrderOptionPriceSum);
-            order.setItems(orderItems);
+            order.setTotalPrice(totalMenuPrice + totalOptionPrice);
 
-            orderRepository.save(order);
+            order = orderRepository.save(order);
+            orderItemRepository.saveAll(orderItems);
+            orderItemOptionRepository.saveAll(oiOptions);
+
+            redisTemplate.delete(key);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("주문 저장 실패", e);
@@ -120,6 +139,7 @@ public class OrderService {
         return orderResponse;
     }
 
+    @Transactional
     public void payOrder(OrderPaymentRequestDto request) {
         Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
@@ -163,6 +183,7 @@ public class OrderService {
         return orderMapper.toOrderDetailResponseDto(order);
     }
 
+    @Transactional
     public void cancelOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("해당 주문을 찾을 수 없습니다."));
