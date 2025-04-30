@@ -1,0 +1,39 @@
+secret:
+  key: ${JWT_SECRET:ENC(encrypted_jwt_secret)}
+
+  application:
+    name: food-delivery-api
+  datasource:
+    url: ${DB_URL:jdbc:mysql://master-db.cr2m2ymeuhd5.ap-northeast-2.rds.amazonaws.com:3306/food_delivery}
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+    show-sql: false
+  data:
+    redis:
+      host: ${REDIS_HOST:redis-prod.example.com}
+      port: ${REDIS_PORT:6379}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-prod.example.com:9092}
+    consumer:
+      group-id: delivery-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+logging:
+  level:
+    root: INFO
+    org:
+      springframework.cache: INFO
+      hibernate: ERROR
