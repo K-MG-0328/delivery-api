@@ -22,7 +22,7 @@ spring:
       host: localhost
       port: 6379
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 172.31.0.111:9092
     consumer:
       group-id: delivery-service
       auto-offset-reset: earliest
