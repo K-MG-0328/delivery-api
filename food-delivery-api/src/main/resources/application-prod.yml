@@ -1,11 +1,11 @@
 secret:
-  key: ${JWT_SECRET:ENC(encrypted_jwt_secret)}
+  key: ${JWT_SECRET}
 
   application:
     name: food-delivery-api
   datasource:
-    url: ${DB_URL:jdbc:mysql://master-db.cr2m2ymeuhd5.ap-northeast-2.rds.amazonaws.com:3306/food_delivery}
-    username: ${DB_USERNAME:admin}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
@@ -18,10 +18,10 @@ secret:
     show-sql: false
   data:
     redis:
-      host: ${REDIS_HOST:redis-prod.example.com}
-      port: ${REDIS_PORT:6379}
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-prod.example.com:9092}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
     consumer:
       group-id: delivery-service
       auto-offset-reset: earliest
@@ -33,7 +33,5 @@ secret:
 
 logging:
   level:
-    root: INFO
-    org:
-      springframework.cache: INFO
-      hibernate: ERROR
+    org.hibernate: DEBUG
+    com.zaxxer.hikari: DEBUG
