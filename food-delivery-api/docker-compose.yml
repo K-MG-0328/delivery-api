@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  food-api-1:
+    image: food-delivery-api
+    container_name: food-delivery-api-1
+    ports:
+      - "8081:8080"  # 외부포트 다르게!
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    restart: unless-stopped
+
+  food-api-2:
+    image: food-delivery-api
+    container_name: food-delivery-api-2
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    restart: unless-stopped
+
+  food-api-3:
+    image: food-delivery-api
+    container_name: food-delivery-api-3
+    ports:
+      - "8083:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_URL=${DB_URL}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    restart: unless-stopped

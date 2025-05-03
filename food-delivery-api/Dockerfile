@@ -1,5 +1,5 @@
 # 1. 기본 Java 이미지 사용
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:17
 
 # 2. 빌드된 JAR 파일 경로 (Gradle 기본 경로 기준)
 ARG JAR_FILE=build/libs/food-delivery-api-0.0.1-SNAPSHOT.jar
