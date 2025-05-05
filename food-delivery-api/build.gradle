@@ -70,6 +70,10 @@ dependencies {
 
     /*실시간 서비스를 위한 웹소켓 라이브러리 추가*/
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    /*AWS 클라우드*/
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-secrets-manager'
 }
 
 tasks.named('test') {

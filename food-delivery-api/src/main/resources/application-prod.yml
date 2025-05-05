@@ -1,7 +1,8 @@
 secret:
   key: ${JWT_SECRET}
-
 spring:
+  config:
+    import: aws-secretsmanager:/prod/api
   application:
     name: food-delivery-api
   datasource:

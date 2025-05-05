@@ -1,17 +1,16 @@
-version: '3.8'
-
 services:
   food-api-1:
     image: mingyuuu/food-delivery-api
     container_name: food-delivery-api-1
     ports:
-      - "8081:8080"  # 외부포트 다르게!
+      - "8081:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - DB_URL=${DB_URL}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
     restart: unless-stopped
+    command: ["--spring.profiles.active=prod"]
 
   food-api-2:
     image: mingyuuu/food-delivery-api
@@ -24,6 +23,7 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
     restart: unless-stopped
+    command: ["--spring.profiles.active=prod"]
 
   food-api-3:
     image: mingyuuu/food-delivery-api
@@ -36,3 +36,4 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
     restart: unless-stopped
+    command: ["--spring.profiles.active=prod"]
