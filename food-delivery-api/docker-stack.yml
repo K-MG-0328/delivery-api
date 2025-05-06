@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  api-service:
+    image: mingyuuu/food-delivery-api:latest
+    ports:
+      - "8080:8080"
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
