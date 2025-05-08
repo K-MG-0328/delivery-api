@@ -3,6 +3,8 @@ version: '3.8'
 services:
   api-service:
     image: mingyuuu/food-delivery-api:latest
+    networks:
+      - food-net
     ports:
       - "8080:8080"
     deploy:
@@ -18,3 +20,8 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+networks:
+  food-net:
+    external: true
