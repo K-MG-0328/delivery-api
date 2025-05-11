@@ -1,3 +1,5 @@
+server:
+  address: 0.0.0.0
 secret:
   key: ${JWT_SECRET}
 spring:
