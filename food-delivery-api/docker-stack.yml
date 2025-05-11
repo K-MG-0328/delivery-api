@@ -15,6 +15,8 @@ services:
       update_config:
         parallelism: 1
         delay: 10s
+        failure_action: rollback   # 헬스체크 실패 시 자동 롤백
+        monitor: 1m                # 모니터 기간(예: 1분) 동안 헬스체크 관찰
       restart_policy:
         condition: on-failure
     healthcheck:
