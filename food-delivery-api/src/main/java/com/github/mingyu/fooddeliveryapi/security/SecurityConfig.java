@@ -1,5 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +14,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final AuthenticationManager authenticationManager;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtTokenProvider jwtTokenProvider;
@@ -52,11 +55,34 @@ public class SecurityConfig {
                                         "/actuator/**").permitAll()
                                 .anyRequest().authenticated()
                 )
+                .addFilterBefore(new JwtLoginFilter(authenticationManager, jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(handler ->
                         handler.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler())
+                        .invalidateHttpSession(false)
+                        .clearAuthentication(true)
+                )
                 .build();
+    }
+
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return (request, response, authentication) -> {
+            String token = jwtTokenProvider.resolveToken(request);
+
+            if (token != null) {
+                jwtTokenProvider.invalidateToken(token);
+            }
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"message\": \"정상적으로 로그아웃 처리되었습니다.\"}");
+        };
     }
 }
