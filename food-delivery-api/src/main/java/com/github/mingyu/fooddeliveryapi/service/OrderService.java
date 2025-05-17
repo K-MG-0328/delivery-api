@@ -2,7 +2,8 @@ package com.github.mingyu.fooddeliveryapi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mingyu.fooddeliveryapi.domain.Cart;
+import com.github.mingyu.fooddeliveryapi.domain.CartSync;
+import com.github.mingyu.fooddeliveryapi.entity.Cart;
 import com.github.mingyu.fooddeliveryapi.domain.CartItem;
 import com.github.mingyu.fooddeliveryapi.dto.order.*;
 import com.github.mingyu.fooddeliveryapi.dto.store.StoreResponseDto;
@@ -45,15 +46,19 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final MenuOptionRepository menuOptionRepository;
 
+    private final CartService cartService;
+
     private final OrderEventProducer orderEventProducer;
 
     @Transactional
     public OrderCreateResponseDto createOrder(OrderCreateRequestDto request) {
         String key = "cart:" + request.getUserId();
-        String cartJson = redisTemplate.opsForValue().get(key);
+        String cartSyncJson = redisTemplate.opsForValue().get(key);
 
-        if(cartJson == null){
-            return new OrderCreateResponseDto();
+        if(cartSyncJson == null){
+            OrderCreateResponseDto response = new OrderCreateResponseDto();
+            response.setOrderStatus(OrderStatus.FAILED);
+            return response;
         }
 
         //사용자, 가게 정보
@@ -70,14 +75,17 @@ public class OrderService {
             order.setStore(store);
 
             //장바구니 정보
-            Cart cart = objectMapper.readValue(cartJson, Cart.class);
+            CartSync cartSync = objectMapper.readValue(cartSyncJson, CartSync.class);
+            Cart cart = cartSync.getCart();
+
+            List<CartItem> cartItems = cartService.deserializCartItems(cart);
 
             //메뉴아이디 가져오기
-            Set<Long> menuIds   = cart.getItems().stream()
+            Set<Long> menuIds   = cartItems.stream()
                     .map(CartItem::getMenuId)
                     .collect(Collectors.toSet());
             //메뉴 옵션 아이디 가져오기
-            Set<Long> optionIds = cart.getItems().stream()
+            Set<Long> optionIds = cartItems.stream()
                     .flatMap(ci -> ci.getMenuOptionIds().stream())
                     .collect(Collectors.toSet());
 
@@ -91,7 +99,7 @@ public class OrderService {
             int totalMenuPrice = 0;       //주문 메뉴 총 가격
             int totalOptionPrice = 0;     //주문 메뉴 옵션 총 가격
 
-            for (CartItem ci : cart.getItems()) {
+            for (CartItem ci : cartItems) {
                 Menu menu = menusById.get(ci.getMenuId());
                 if (menu == null) throw new RuntimeException("메뉴 없음");
 

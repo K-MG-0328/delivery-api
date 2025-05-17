@@ -7,6 +7,8 @@ public enum OrderStatus {
 
     @Schema(description = "주문 생성")
     CREATED,
+    @Schema(description = "주문 실패")
+    FAILED,
     @Schema(description = "주문 결제")
     PAID,
     @Schema(description = "가게가 주문을 접수한 상태")
