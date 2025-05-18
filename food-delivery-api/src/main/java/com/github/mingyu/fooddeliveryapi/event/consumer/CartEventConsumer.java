@@ -9,6 +9,7 @@ import com.github.mingyu.fooddeliveryapi.repository.CartRepository;
 import com.github.mingyu.fooddeliveryapi.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -66,6 +67,7 @@ public class CartEventConsumer {
 
     // 배치 처리 스케줄러
     @Scheduled(fixedRate = 3600000) // 1시간
+    @SchedulerLock(name = "cartSyncTask", lockAtMostFor = "10m", lockAtLeastFor = "1m")
     public void processBatchEvents() {
         log.info("Starting batch event processing...");
 
