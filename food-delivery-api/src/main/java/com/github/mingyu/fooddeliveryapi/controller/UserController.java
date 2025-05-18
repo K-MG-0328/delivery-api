@@ -1,6 +1,5 @@
 package com.github.mingyu.fooddeliveryapi.controller;
 
-import com.github.mingyu.fooddeliveryapi.aop.CheckUserAuthorization;
 import com.github.mingyu.fooddeliveryapi.dto.user.UserRequestDto;
 import com.github.mingyu.fooddeliveryapi.dto.user.UserResponseDto;
 import com.github.mingyu.fooddeliveryapi.service.UserService;
@@ -11,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CheckUserAuthorization
+
 @Tag(name = "User API", description = "회원 관련 API (가입, 조회, 수정, 탈퇴)")
 @RestController
 @RequiredArgsConstructor
