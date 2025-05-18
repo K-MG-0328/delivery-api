@@ -2,15 +2,15 @@ package com.github.mingyu.fooddeliveryapi.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mingyu.fooddeliveryapi.domain.CartSync;
-import com.github.mingyu.fooddeliveryapi.entity.Cart;
 import com.github.mingyu.fooddeliveryapi.domain.CartItem;
 import com.github.mingyu.fooddeliveryapi.dto.order.*;
 import com.github.mingyu.fooddeliveryapi.dto.store.StoreResponseDto;
 import com.github.mingyu.fooddeliveryapi.dto.user.UserResponseDto;
 import com.github.mingyu.fooddeliveryapi.entity.*;
 import com.github.mingyu.fooddeliveryapi.enums.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.event.dto.CartEvent;
 import com.github.mingyu.fooddeliveryapi.event.dto.OrderPaidEvent;
+import com.github.mingyu.fooddeliveryapi.event.producer.CartEventProducer;
 import com.github.mingyu.fooddeliveryapi.event.producer.OrderEventProducer;
 import com.github.mingyu.fooddeliveryapi.mapper.OrderMapper;
 import com.github.mingyu.fooddeliveryapi.mapper.StoreMapper;
@@ -21,7 +21,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,6 +53,7 @@ public class OrderService {
     private final CartService cartService;
 
     private final OrderEventProducer orderEventProducer;
+    private final CartEventProducer cartEventProducer;
 
     @Transactional
     public OrderCreateResponseDto createOrder(OrderCreateRequestDto request) {
@@ -75,8 +80,7 @@ public class OrderService {
             order.setStore(store);
 
             //장바구니 정보
-            CartSync cartSync = objectMapper.readValue(cartSyncJson, CartSync.class);
-            Cart cart = cartSync.getCart();
+            Cart cart = objectMapper.readValue(cartSyncJson, Cart.class);
 
             List<CartItem> cartItems = cartService.deserializCartItems(cart);
 
@@ -156,12 +160,18 @@ public class OrderService {
             throw new IllegalStateException("이미 결제되었거나 유효하지 않은 주문입니다.");
         }
 
-        /* 결제 API 호출 (미구현)*/
-
+        /* 결제 처리*/
         order.setRequests(request.getRequests());
         order.setStatus(OrderStatus.PAID);
         order.setPaymentMethod(request.getPaymentMethod());
         orderRepository.save(order);
+
+        //장바구니 DB 동기화
+        CartEvent cartEvent = new CartEvent();
+        cartEvent.setUserId(order.getUser().getUserId().toString());
+        cartEvent.setStatus(OrderStatus.PAID);
+        cartEvent.setTimestamp(Instant.now().toString());
+        cartEventProducer.sendCartEvent(cartEvent);
 
         // 결제 이후 이벤트 발행
         OrderPaidEvent event = new OrderPaidEvent(

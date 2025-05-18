@@ -5,16 +5,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mingyu.fooddeliveryapi.domain.CartItem;
-import com.github.mingyu.fooddeliveryapi.domain.CartSync;
 import com.github.mingyu.fooddeliveryapi.dto.cart.CartResponseDto;
 import com.github.mingyu.fooddeliveryapi.dto.cart.CartUpdateDto;
 import com.github.mingyu.fooddeliveryapi.dto.cart.ItemAddRequestDto;
 import com.github.mingyu.fooddeliveryapi.entity.Cart;
+import com.github.mingyu.fooddeliveryapi.enums.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.event.dto.CartEvent;
+import com.github.mingyu.fooddeliveryapi.event.producer.CartEventProducer;
 import com.github.mingyu.fooddeliveryapi.mapper.CartMapper;
+import com.github.mingyu.fooddeliveryapi.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -24,6 +28,8 @@ public class CartService {
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
     private final CartMapper cartMapper;
+    private final CartEventProducer cartEventProducer;
+    private final CartRepository cartRepository;
 
     public void addToCartItem(ItemAddRequestDto request) {
         String key = "cart:" + request.getUserId();
@@ -75,12 +81,20 @@ public class CartService {
             String cartItemsJson = objectMapper.writeValueAsString(cartItems);
             cart.setItems(cartItemsJson);
 
-            CartSync cartSync = new CartSync();
-            cartSync.setCart(cart);
-            cartSync.setDbSync(false);
-
-            String updatedJson = objectMapper.writeValueAsString(cartSync);
+            //캐시 업데이트
+            String updatedJson = objectMapper.writeValueAsString(cart);
             redisTemplate.opsForValue().set(key, updatedJson);
+            redisTemplate.opsForValue().setIfAbsent("cart:synced:user:" + request.getUserId(), "false");
+
+            // Kafka 이벤트 발행
+            CartEvent event = new CartEvent();
+            event.setUserId(request.getUserId().toString());
+            event.setStatus(OrderStatus.BEFORE_CREATE);
+            event.setItemId(request.getMenuId().toString());
+            event.setTimestamp(Instant.now().toString());
+            event.setStoreId(request.getStoreId());
+
+            cartEventProducer.sendCartEvent(event);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("장바구니 저장 실패", e);
@@ -92,12 +106,22 @@ public class CartService {
         String cartJson = redisTemplate.opsForValue().get(key);
 
         if (cartJson == null) {
-            return CartResponseDto.empty(userId);
+            List<Cart> cart = cartRepository.findByUserIdAndStatus(userId, OrderStatus.BEFORE_CREATE);
+            if(cart.isEmpty()){
+                return CartResponseDto.empty(userId);
+            }
+
+            try {
+                cartJson = objectMapper.writeValueAsString(cart.get(0));
+                redisTemplate.opsForValue().set(key, cartJson);
+            }catch (JsonProcessingException e){
+                throw new RuntimeException("Json 변환 실패", e);
+            }
         }
 
         try {
-            CartSync cartSync = objectMapper.readValue(cartJson, CartSync.class);
-            CartResponseDto dto = cartMapper.toDto(cartSync.getCart());
+            Cart cart = objectMapper.readValue(cartJson, Cart.class);
+            CartResponseDto dto = cartMapper.toDto(cart);
             return dto;
         } catch (JsonProcessingException e) {
             throw new RuntimeException("장바구니 불러오기 실패", e);
@@ -115,8 +139,7 @@ public class CartService {
 
         try {
 
-            CartSync cartSync = objectMapper.readValue(cartJson, CartSync.class);
-            Cart cart = cartSync.getCart();
+            Cart cart = objectMapper.readValue(cartJson, Cart.class);
 
             List<CartItem> cartItems = deserializCartItems(cart);
 
@@ -131,11 +154,19 @@ public class CartService {
             String cartItemsJson = objectMapper.writeValueAsString(cartItems);
             cart.setItems(cartItemsJson);
 
-            cartSync.setCart(cart);
-            cartSync.setDbSync(false);
-
-            String updatedJson = objectMapper.writeValueAsString(cartSync);
+            //캐시 업데이트
+            String updatedJson = objectMapper.writeValueAsString(cart);
             redisTemplate.opsForValue().set(key, updatedJson);
+            redisTemplate.opsForValue().setIfAbsent("cart:synced:user:" + userId, "false");
+
+            CartEvent event = new CartEvent();
+            event.setUserId(userId.toString());
+            event.setStatus(OrderStatus.BEFORE_CREATE);
+            event.setItemId(menuId.toString());
+            event.setTimestamp(Instant.now().toString());
+            event.setStoreId(cart.getStoreId());
+
+            cartEventProducer.sendCartEvent(event);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("장바구니 수량 수정 실패", e);
@@ -151,17 +182,29 @@ public class CartService {
         if (cartJson == null) return;
 
         try {
-            CartSync cartSync = objectMapper.readValue(cartJson, CartSync.class);
-            Cart cart = cartSync.getCart();
+            Cart cart = objectMapper.readValue(cartJson, Cart.class);
 
             List<CartItem> cartItems = deserializCartItems(cart);
             cartItems.removeIf(item -> item.getMenuId().equals(menuId));
 
             String cartItemJson = objectMapper.writeValueAsString(cartItems);
             cart.setItems(cartItemJson);
-            cartSync.setCart(cart);
-            String updatedJson = objectMapper.writeValueAsString(cartSync);
+
+            //캐시 업데이트
+            String updatedJson = objectMapper.writeValueAsString(cart);
             redisTemplate.opsForValue().set(key, updatedJson);
+            redisTemplate.opsForValue().setIfAbsent("cart:synced:user:" + userId, "false");
+
+
+            CartEvent event = new CartEvent();
+            event.setUserId(userId.toString());
+            event.setStatus(OrderStatus.BEFORE_CREATE);
+            event.setItemId(menuId.toString());
+            event.setTimestamp(Instant.now().toString());
+
+            event.setStoreId(cart.getStoreId());
+
+            cartEventProducer.sendCartEvent(event);
 
         } catch (JsonProcessingException e) {
             throw new RuntimeException("장바구니 항목 삭제 실패", e);
@@ -171,6 +214,7 @@ public class CartService {
     public void clearCart(Long userId) {
         String key = "cart:" + userId;
         redisTemplate.delete(key);
+        redisTemplate.delete("cart:synced:user:" + userId);
     }
 
 
