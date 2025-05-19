@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -46,6 +48,10 @@ public class Order {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+    @ElementCollection
+    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
+    private List<OrderItem> items = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         createdDate = LocalDateTime.now();
@@ -54,5 +60,9 @@ public class Order {
     @PreUpdate
     protected void onUpdate() {
         modifiedDate = LocalDateTime.now();
+    }
+
+    public void addItem(OrderItem item) {
+        items.add(item);
     }
 }

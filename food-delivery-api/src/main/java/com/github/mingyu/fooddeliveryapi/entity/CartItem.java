@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain;
+package com.github.mingyu.fooddeliveryapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -23,6 +23,4 @@ public class CartItem {
     @JsonProperty("quantity")
     private int quantity;
 
-    @JsonProperty("price")
-    private int price;
 }

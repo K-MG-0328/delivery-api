@@ -1,50 +1,34 @@
 package com.github.mingyu.fooddeliveryapi.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
-@Entity
-@Table(name = "order_items")
+@Embeddable
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderItemId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderId", nullable = false)
-    private Order order;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menuId", nullable = false)
-    private Menu menu;
-
-    @Column(nullable = false)
+    private Long menuId;
     private int quantity;
-
-    @Column(nullable = false)
     private int price;
 
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    @ElementCollection
+    @CollectionTable(name = "order_item_options", joinColumns = @JoinColumn(name = "order_id"))
+    private List<OrderItemOption> options = new ArrayList<>();
 
-    @PrePersist
-    protected void onCreate() {
-        createdDate = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        modifiedDate = LocalDateTime.now();
+    public void addOption(OrderItemOption option) {
+        options.add(option);
     }
 }

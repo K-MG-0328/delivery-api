@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "menu")
@@ -38,6 +40,10 @@ public class Menu {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+    @ElementCollection
+    @CollectionTable(name = "menu_options", joinColumns = @JoinColumn(name = "menu_id"))
+    private List<MenuOption> options = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         createdDate = LocalDateTime.now();
@@ -46,5 +52,9 @@ public class Menu {
     @PreUpdate
     protected void onUpdate() {
         modifiedDate = LocalDateTime.now();
+    }
+
+    public void addOption(MenuOption option) {
+        options.add(option);
     }
 }
