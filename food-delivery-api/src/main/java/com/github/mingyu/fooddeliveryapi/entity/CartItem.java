@@ -17,8 +17,8 @@ public class CartItem {
     @JsonProperty("menuId")
     private Long menuId;
 
-    @JsonProperty("menuOptionIds")
-    private List<Long> menuOptionIds;
+    @JsonProperty("options")
+    private List<String> options;
 
     @JsonProperty("quantity")
     private int quantity;

@@ -4,7 +4,7 @@ package com.github.mingyu.fooddeliveryapi.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mingyu.fooddeliveryapi.domain.CartItem;
+import com.github.mingyu.fooddeliveryapi.entity.CartItem;
 import com.github.mingyu.fooddeliveryapi.dto.cart.CartResponseDto;
 import com.github.mingyu.fooddeliveryapi.dto.cart.CartUpdateDto;
 import com.github.mingyu.fooddeliveryapi.dto.cart.ItemAddRequestDto;
@@ -55,12 +55,12 @@ public class CartService {
             // 기존 아이템과 중복 확인
             List<CartItem> cartItems = deserializCartItems(cart);
 
-            // 동일한 menuId와 menuOptionIds를 가진 CartItem 찾기
+            // 동일한 menuId와 options 가진 CartItem 찾기
             Optional<CartItem> existing = cartItems.stream()
                     .filter(item -> Objects.equals(item.getMenuId(), request.getMenuId()))
                     .filter(item -> Objects.equals(
-                            item.getMenuOptionIds() != null ? new HashSet<>(item.getMenuOptionIds()) : null,
-                            request.getMenuOptionIds() != null ? new HashSet<>(request.getMenuOptionIds()) : null))
+                            item.getOptions() != null ? new HashSet<>(item.getOptions()) : null,
+                            request.getOptions() != null ? new HashSet<>(request.getOptions()) : null))
                     .findFirst();
 
             if (existing.isPresent()) {
@@ -71,9 +71,8 @@ public class CartService {
                 // 새로운 아이템 생성
                 CartItem item = new CartItem();
                 item.setMenuId(request.getMenuId());
-                item.setMenuOptionIds(request.getMenuOptionIds());
+                item.setOptions(request.getOptions());
                 item.setQuantity(request.getQuantity());
-                item.setPrice(request.getPrice());
 
                 cartItems.add(item);
             }

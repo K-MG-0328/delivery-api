@@ -24,7 +24,7 @@ public class ItemAddRequestDto {
     private int price;
 
     @Schema(description = "선택한 메뉴 옵션 ID 목록", example = "[1, 2]")
-    private List<Long> menuOptionIds;
+    private List<String> options;
 
     @Schema(description = "수량", example = "2")
     private int quantity;
