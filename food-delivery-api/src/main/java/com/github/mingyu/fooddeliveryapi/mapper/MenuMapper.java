@@ -13,10 +13,11 @@ import java.util.List;
 public interface MenuMapper {
 
     Menu toEntity(MenuCreateRequestDto dto);
+    MenuResponseDto toDto(Menu menu);
 
     void updateFromDto(MenuUpdateRequestDto dto, @MappingTarget Menu menu);
 
-    MenuResponseDto toDto(Menu menu);
+
 
     List<MenuResponseDto> toDtoList(List<Menu> menus);
 }

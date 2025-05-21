@@ -1,30 +1,47 @@
 package com.github.mingyu.fooddeliveryapi.entity;
 
 import com.github.mingyu.fooddeliveryapi.enums.MenuOptionStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Embeddable
+import java.time.LocalDateTime;
+
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuOption {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long menuOptionId;
+
+    private Long menuId;
+
     @Column(name = "optionName", nullable = false)
     private String option;
 
     @Column(nullable = false)
-    private int price;
+    private Integer price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 255)
     private MenuOptionStatus status;
 
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
+
+    @PrePersist
+    protected void onCreate() {
+        createdDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifiedDate = LocalDateTime.now();
+    }
 }

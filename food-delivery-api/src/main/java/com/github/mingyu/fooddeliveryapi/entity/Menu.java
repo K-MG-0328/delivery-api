@@ -8,11 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
-@Table(name = "menu")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,15 +20,14 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long menuId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId", nullable = false)
-    private Store store;
+    @Column(nullable = false)
+    private Long storeId;
 
     @Column(nullable = false, length = 255)
     private String name;
 
     @Column(nullable = false)
-    private int price;
+    private Integer price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -39,10 +35,6 @@ public class Menu {
 
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-
-    @ElementCollection
-    @CollectionTable(name = "menu_options", joinColumns = @JoinColumn(name = "menu_id"))
-    private List<MenuOption> options = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
@@ -52,9 +44,5 @@ public class Menu {
     @PreUpdate
     protected void onUpdate() {
         modifiedDate = LocalDateTime.now();
-    }
-
-    public void addOption(MenuOption option) {
-        options.add(option);
     }
 }
