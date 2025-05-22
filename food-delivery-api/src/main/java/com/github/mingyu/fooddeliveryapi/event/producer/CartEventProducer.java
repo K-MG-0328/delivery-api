@@ -15,7 +15,9 @@ public class CartEventProducer {
     @Qualifier("cartEventKafkaTemplate")
     private final KafkaTemplate<String, CartEvent> kafkaTemplate;
 
+    /* Cart 변경 사항에 대해서 메시지 발행 */
     public void sendCartEvent(CartEvent event){
-        kafkaTemplate.send("cart-events", event.getUserId().toString(), event);
+        String userId = event.getCart().getUserId().toString();
+        kafkaTemplate.send("cart-events", userId, event);
     }
 }

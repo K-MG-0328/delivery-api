@@ -1,26 +1,38 @@
 package com.github.mingyu.fooddeliveryapi.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItem {
 
-    @JsonProperty("menuId")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long cartItemId;
+
+    @Column(nullable = false)
+    private Long cartId;
+
+    @Column(nullable = false)
     private Long menuId;
 
-    @JsonProperty("options")
-    private List<String> options;
+    @Column(nullable = false)
+    private Long name;
 
-    @JsonProperty("quantity")
-    private int quantity;
+    @Column(nullable = false)
+    private Integer price;
+
+    @Column(nullable = false)
+    private Integer quantity;
+
+    @Column(columnDefinition = "json")
+    private String options = "[]";
 
 }

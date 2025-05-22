@@ -1,17 +1,18 @@
 package com.github.mingyu.fooddeliveryapi.event.dto;
 
-import com.github.mingyu.fooddeliveryapi.enums.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.entity.Cart;
+import com.github.mingyu.fooddeliveryapi.entity.CartItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartEvent {
-    private String userId;
-    private OrderStatus status;
-    private String itemId; // menuId
+    private Cart cart;
+    private List<CartItem> cartItems;
     private String timestamp;
-    private Long storeId;
 }

@@ -1,7 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.controller;
 
 import com.github.mingyu.fooddeliveryapi.dto.cart.CartResponseDto;
-import com.github.mingyu.fooddeliveryapi.dto.cart.ItemAddRequestDto;
+import com.github.mingyu.fooddeliveryapi.dto.cart.CartItemAddRequestDto;
 import com.github.mingyu.fooddeliveryapi.dto.cart.CartUpdateDto;
 import com.github.mingyu.fooddeliveryapi.service.CartService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,7 +17,7 @@ public class CartController {
 
     @Operation(summary = "장바구니 담기", description = "메뉴를 장바구니에 추가합니다.")
     @PostMapping("/cart")
-    public ResponseEntity<Void> addToCartItem(@RequestBody ItemAddRequestDto request){
+    public ResponseEntity<Void> addToCartItem(@RequestBody CartItemAddRequestDto request){
         cartService.addToCartItem(request);
         return ResponseEntity.ok().build();
     }

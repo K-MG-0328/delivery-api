@@ -1,7 +1,8 @@
-package com.github.mingyu.fooddeliveryapi.repository;
+package com.github.mingyu.fooddeliveryapi.repository.impl;
 
 import com.github.mingyu.fooddeliveryapi.entity.QStore;
 import com.github.mingyu.fooddeliveryapi.entity.Store;
+import com.github.mingyu.fooddeliveryapi.repository.StoreRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

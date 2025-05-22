@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "stores")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,19 +33,19 @@ public class Store {
     private String phone;                   // 가게 전화번호
 
     @Column(nullable = false)
-    private int minDeliveryPrice;           // 최소 주문 금액
+    private Integer minDeliveryPrice;           // 최소 주문 금액
 
     @Column(nullable = false)
-    private int deliveryTip;                // 배달 팁
+    private Integer deliveryTip;                // 배달 팁
 
     @Column(nullable = false)
-    private int minDeliveryTime;            // 최소 배달 예상 시간 (분 단위)
+    private Integer minDeliveryTime;            // 최소 배달 예상 시간 (분 단위)
 
     @Column(nullable = false)
-    private int maxDeliveryTime;            // 최대 배달 예상 시간 (분 단위)
+    private Integer maxDeliveryTime;            // 최대 배달 예상 시간 (분 단위)
 
     @Column(nullable = false)
-    private double ratings;                 // 가게 평점
+    private Double ratings;                 // 가게 평점
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

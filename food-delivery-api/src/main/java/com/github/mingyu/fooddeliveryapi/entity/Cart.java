@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.entity;
 
-import com.github.mingyu.fooddeliveryapi.enums.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.enums.CartStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,13 +21,12 @@ public class Cart {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
     private Long storeId;
 
-    @Column
-    private OrderStatus status;
+    @Column(nullable = false)
+    private CartStatus status;
 
-    @Column(columnDefinition = "json")
-    private String items = "[]";
+    @Column(nullable = false)
+    private Integer totalPrice;
 
 }
