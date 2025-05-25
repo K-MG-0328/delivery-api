@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.config;
+package com.github.mingyu.fooddeliveryapi.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;

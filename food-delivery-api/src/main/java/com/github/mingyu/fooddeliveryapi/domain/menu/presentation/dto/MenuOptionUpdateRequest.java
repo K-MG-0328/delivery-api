@@ -9,12 +9,8 @@ import lombok.Setter;
 @Setter
 @Schema(description = "메뉴 옵션 수정 요청 DTO")
 public class MenuOptionUpdateRequest {
-
-    @Schema(description = "메뉴 ID", example = "1")
-    private Long menuId;
-
     @Schema(description = "옵션 ID", example = "1")
-    private Long menuOptionId;
+    private String menuOptionId;
 
     @Schema(description = "메뉴 옵션 이름", example = "치즈 많이")
     private String option;

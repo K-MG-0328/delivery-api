@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 public class Store {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long storeId;                   // 가게 ID (고유 식별자)
+    private String storeId;                   // 가게 ID (고유 식별자)
 
     @Column(nullable = false, length = 255)
     private String name;                    // 가게 이름

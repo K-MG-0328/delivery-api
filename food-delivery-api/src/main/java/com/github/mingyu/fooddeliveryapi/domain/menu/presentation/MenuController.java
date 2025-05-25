@@ -1,6 +1,8 @@
 package com.github.mingyu.fooddeliveryapi.domain.menu.presentation;
 
+import com.github.mingyu.fooddeliveryapi.domain.menu.application.MenuMapper;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.MenuService;
+import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuParam;
 import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,11 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class MenuController {
 
     private final MenuService menuService;
+    private final MenuMapper menuMapper;
 
     @Operation(summary = "메뉴 추가", description = "새로운 메뉴를 추가합니다.")
     @PostMapping("/menu")
     public ResponseEntity<Void> addMenu(@RequestBody MenuCreateRequest request) {
-        menuService.addMenu(request);
+        MenuParam menuParam = menuMapper.toMenuParam(request);
+        menuService.addMenu(menuParam);
         return ResponseEntity.ok().build();
     }
 
@@ -32,7 +36,8 @@ public class MenuController {
     @Operation(summary = "메뉴 수정", description = "기존 메뉴 정보를 수정합니다.")
     @PutMapping("/menu/{menuId}")
     public ResponseEntity<Void> updateMenu(@PathVariable Long menuId, @RequestBody MenuUpdateRequest request) {
-        menuService.updateMenu(menuId, request);
+        MenuParam menuParam = menuMapper.toMenuParam(request);
+        menuService.updateMenu(menuId, menuParam);
         return ResponseEntity.ok().build();
     }
 

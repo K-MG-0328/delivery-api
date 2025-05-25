@@ -10,4 +10,6 @@ public enum MenuStatus {
     INACTIVE,
     @Schema(description = "메뉴가 품절된 상태")
     SOLD_OUT,
+    @Schema(description = "메뉴가 제거된 상태")
+    DELETED,
 }

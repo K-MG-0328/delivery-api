@@ -11,7 +11,7 @@ import lombok.Setter;
 public class MenuOptionCreateRequest {
 
     @Schema(description = "메뉴 옵션 이름", example = "치즈 추가")
-    private String option;
+    private String optionName;
 
     @Schema(description = "추가 금액", example = "500")
     private int price;

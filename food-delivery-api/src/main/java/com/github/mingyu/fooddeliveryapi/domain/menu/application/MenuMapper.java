@@ -1,20 +1,24 @@
 package com.github.mingyu.fooddeliveryapi.domain.menu.application;
 
+import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuParam;
+import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuOptionParam;
 import com.github.mingyu.fooddeliveryapi.domain.menu.domain.Menu;
-import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.MenuCreateRequest;
-import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.MenuResponse;
-import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.MenuUpdateRequest;
+import com.github.mingyu.fooddeliveryapi.domain.menu.domain.MenuOption;
+import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.*;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {MenuOptionMapper.class})
+@Mapper(componentModel = "spring")
 public interface MenuMapper {
 
-    Menu toEntity(MenuCreateRequest dto);
-    MenuResponse toDto(Menu menu);
+    MenuParam toMenuParam(MenuCreateRequest request);
+    MenuOptionParam toMenuOptionParam(MenuOptionCreateRequest request);
 
-    void updateFromDto(MenuUpdateRequest dto, @MappingTarget Menu menu);
-    List<MenuResponse> toDtoList(List<Menu> menus);
+    MenuParam toMenuParam(MenuUpdateRequest request);
+    MenuOptionParam toMenuOptionParam(MenuOptionUpdateRequest request);
+
+
+    MenuResponse toDto(Menu menu);
+    List<MenuOptionResponse> toDtoList(List<MenuOption> entities);
 }

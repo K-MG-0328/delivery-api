@@ -10,19 +10,20 @@ import java.util.List;
 @Getter
 public class Menu {
 
-    public Menu(Long menuId, Long storeId, String name, Integer price, MenuStatus status) {
+    public Menu(String menuId, String storeId, String name, Integer price, MenuStatus status, List<MenuOption> options) {
         this.menuId = menuId;
         this.storeId = storeId;
         this.name = name;
         this.price = price;
         this.status = status;
+        this.options = options;
     }
 
     @Id
-    private Long menuId; //UUID
+    private String menuId; //UUID
 
     @Column(nullable = false)
-    private Long storeId;
+    private String storeId;
 
     @Column(nullable = false, length = 255)
     private String name;
@@ -55,4 +56,9 @@ public class Menu {
         menuOption.addMenu(this);
     }
 
+    public void addMenuOptionList(List<MenuOption> menuOptions) {
+        for (MenuOption menuOption : menuOptions) {
+            this.addMenuOption(menuOption);
+        }
+    }
 }

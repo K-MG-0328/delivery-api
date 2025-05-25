@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.config;
+package com.github.mingyu.fooddeliveryapi.common.config;
 
 import com.github.mingyu.fooddeliveryapi.domain.cart.event.CartEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;

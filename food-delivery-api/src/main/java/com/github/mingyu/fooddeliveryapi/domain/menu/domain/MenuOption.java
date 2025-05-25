@@ -9,15 +9,22 @@ import java.time.LocalDateTime;
 @Getter
 public class MenuOption {
 
+    public MenuOption(String menuOptionId, String optionName, Integer price, MenuOptionStatus status) {
+        this.menuOptionId = menuOptionId;
+        this.optionName = optionName;
+        this.price = price;
+        this.status = status;
+    }
+
     @Id
-    private Long menuOptionId; //UUID
+    private String menuOptionId; //UUID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @Column(name = "optionName", nullable = false)
-    private String option;
+    @Column(nullable = false)
+    private String optionName;
 
     @Column(nullable = false)
     private Integer price;
