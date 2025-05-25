@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.domain.order.presentation;
 
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.dto.*;
+import com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto.*;
 import com.github.mingyu.fooddeliveryapi.order.domain.dto.*;
 import com.github.mingyu.fooddeliveryapi.domain.order.application.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,29 +18,29 @@ public class OrderController {
 
     @Operation(summary = "주문 생성", description = "장바구니를 기반으로 새로운 주문을 생성합니다.")
     @PostMapping("/order")
-    public ResponseEntity<OrderCreateResponseDto> createOrder(@RequestBody OrderCreateRequestDto request) {
-        OrderCreateResponseDto order = orderService.createOrder(request);
+    public ResponseEntity<OrderCreateResponse> createOrder(@RequestBody OrderCreateRequest request) {
+        OrderCreateResponse order = orderService.createOrder(request);
         return ResponseEntity.ok(order);
     }
 
     @Operation(summary = "주문 결제 처리", description = "주문을 결제 처리합니다.")
     @PostMapping("/order/pay")
-    public ResponseEntity<Void> payOrder(@RequestBody OrderPaymentRequestDto request) {
+    public ResponseEntity<Void> payOrder(@RequestBody OrderPaymentRequest request) {
         orderService.payOrder(request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "사용자 주문 목록 조회", description = "사용자의 모든 주문 목록을 반환합니다.")
     @GetMapping("/order")
-    public ResponseEntity<OrderListResponseDto> getUserOrders(@RequestParam Long userId) {
-        OrderListResponseDto orders = orderService.getUserOrders(userId);
+    public ResponseEntity<OrderListResponse> getUserOrders(@RequestParam Long userId) {
+        OrderListResponse orders = orderService.getUserOrders(userId);
         return ResponseEntity.ok(orders);
     }
 
     @Operation(summary = "주문 상세 조회", description = "주문의 상세 정보를 반환합니다.")
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<OrderDetailResponseDto> getOrder(@PathVariable Long orderId) {
-        OrderDetailResponseDto order = orderService.getOrder(orderId);
+    public ResponseEntity<OrderDetailResponse> getOrder(@PathVariable Long orderId) {
+        OrderDetailResponse order = orderService.getOrder(orderId);
         return ResponseEntity.ok(order);
     }
 

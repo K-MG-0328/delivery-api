@@ -1,7 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.domain.user.application;
 
-import com.github.mingyu.fooddeliveryapi.domain.user.domain.dto.UserRequestDto;
-import com.github.mingyu.fooddeliveryapi.domain.user.domain.dto.UserResponseDto;
+import com.github.mingyu.fooddeliveryapi.domain.user.presentation.dto.UserRequest;
+import com.github.mingyu.fooddeliveryapi.domain.user.presentation.dto.UserResponse;
 import com.github.mingyu.fooddeliveryapi.domain.user.domain.User;
 import com.github.mingyu.fooddeliveryapi.domain.user.domain.UserStatus;
 import com.github.mingyu.fooddeliveryapi.domain.user.domain.UserRepository;
@@ -19,7 +19,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserResponseDto createUser(UserRequestDto userDto) {
+    public UserResponse createUser(UserRequest userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
@@ -29,38 +29,38 @@ public class UserService {
         user.setPassword(encodedPassword);
 
         user = userRepository.save(user);
-        UserResponseDto userResponseDto = userMapper.toDto(user);
-        return userResponseDto;
+        UserResponse userResponse = userMapper.toDto(user);
+        return userResponse;
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDto getUser(Long userId) {
+    public UserResponse getUser(Long userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
-        UserResponseDto userResponseDto = userMapper.toDto(user);
-        return userResponseDto;
+        UserResponse userResponse = userMapper.toDto(user);
+        return userResponse;
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDto getUserByEmail(String email) {
+    public UserResponse getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다.: " + email));
-        UserResponseDto userResponseDto = userMapper.toDto(user);
-        return userResponseDto;
+        UserResponse userResponse = userMapper.toDto(user);
+        return userResponse;
     }
 
     @Transactional
-    public UserResponseDto updateUser(Long userId, UserRequestDto userDto) {
+    public UserResponse updateUser(Long userId, UserRequest userDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
         userMapper.updateFromDto(userDto, user);
         userRepository.save(user);
-        UserResponseDto userResponseDto = userMapper.toDto(user);
+        UserResponse userResponse = userMapper.toDto(user);
 
-        return userResponseDto;
+        return userResponse;
     }
 
     @Transactional

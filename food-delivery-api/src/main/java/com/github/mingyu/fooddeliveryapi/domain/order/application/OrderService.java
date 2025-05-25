@@ -11,14 +11,14 @@ import com.github.mingyu.fooddeliveryapi.domain.menu.domain.MenuOptionRepository
 import com.github.mingyu.fooddeliveryapi.domain.menu.domain.MenuRepository;
 import com.github.mingyu.fooddeliveryapi.domain.order.domain.Order;
 import com.github.mingyu.fooddeliveryapi.domain.order.domain.OrderRepository;
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.dto.*;
+import com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto.*;
+import com.github.mingyu.fooddeliveryapi.domain.user.presentation.dto.UserResponse;
 import com.github.mingyu.fooddeliveryapi.order.domain.dto.*;
 import com.github.mingyu.fooddeliveryapi.domain.store.domain.Store;
 import com.github.mingyu.fooddeliveryapi.domain.store.domain.StoreRepository;
-import com.github.mingyu.fooddeliveryapi.domain.store.domain.dto.StoreResponseDto;
+import com.github.mingyu.fooddeliveryapi.domain.store.presentation.dto.StoreResponse;
 import com.github.mingyu.fooddeliveryapi.domain.user.domain.User;
 import com.github.mingyu.fooddeliveryapi.domain.user.domain.UserRepository;
-import com.github.mingyu.fooddeliveryapi.domain.user.domain.dto.UserResponseDto;
 import com.github.mingyu.fooddeliveryapi.enums.OrderStatus;
 import com.github.mingyu.fooddeliveryapi.domain.cart.event.CartEvent;
 import com.github.mingyu.fooddeliveryapi.domain.order.event.OrderPaidEvent;
@@ -66,12 +66,12 @@ public class OrderService {
     private final CartEventProducer cartEventProducer;
 
     @Transactional
-    public OrderCreateResponseDto createOrder(OrderCreateRequestDto request) {
+    public OrderCreateResponse createOrder(OrderCreateRequest request) {
         String key = "cart:" + request.getUserId();
         String cartSyncJson = redisTemplate.opsForValue().get(key);
 
         if(cartSyncJson == null){
-            OrderCreateResponseDto response = new OrderCreateResponseDto();
+            OrderCreateResponse response = new OrderCreateResponse();
             response.setOrderStatus(OrderStatus.FAILED);
             return response;
         }
@@ -151,9 +151,9 @@ public class OrderService {
             throw new RuntimeException("주문 저장 실패", e);
         }
 
-        OrderCreateResponseDto orderResponse = orderMapper.toOrderCreateResponseDto(order);
-        UserResponseDto userDto = userMapper.toDto(user);
-        StoreResponseDto storeDto = storeMapper.toDto(store);
+        OrderCreateResponse orderResponse = orderMapper.toOrderCreateResponseDto(order);
+        UserResponse userDto = userMapper.toDto(user);
+        StoreResponse storeDto = storeMapper.toDto(store);
 
         orderResponse.setUser(userDto);
         orderResponse.setStore(storeDto);
@@ -162,7 +162,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void payOrder(OrderPaymentRequestDto request) {
+    public void payOrder(OrderPaymentRequest request) {
         Order order = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
 
@@ -195,16 +195,16 @@ public class OrderService {
         orderEventProducer.sendOrderPaidEvent(event);
     }
 
-    public OrderListResponseDto getUserOrders(Long userId) {
+    public OrderListResponse getUserOrders(Long userId) {
         List<Order> orders = orderRepository.findByUser_UserId(userId);
-        List<OrderDetailResponseDto> orderList = orders.stream()
+        List<OrderDetailResponse> orderList = orders.stream()
                 .map(orderMapper::toOrderDetailResponseDto)
                 .collect(Collectors.toList());
 
-        return new OrderListResponseDto(orderList);
+        return new OrderListResponse(orderList);
     }
 
-    public OrderDetailResponseDto getOrder(Long orderId) {
+    public OrderDetailResponse getOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("해당 주문을 찾을 수 없습니다."));
 

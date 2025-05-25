@@ -3,10 +3,9 @@ package com.github.mingyu.fooddeliveryapi.domain.menu.application;
 import com.github.mingyu.fooddeliveryapi.domain.menu.domain.Menu;
 import com.github.mingyu.fooddeliveryapi.domain.menu.domain.MenuOption;
 import com.github.mingyu.fooddeliveryapi.domain.menu.domain.MenuStatus;
-import com.github.mingyu.fooddeliveryapi.domain.menu.domain.dto.*;
-import com.github.mingyu.fooddeliveryapi.menu.domain.dto.*;
 import com.github.mingyu.fooddeliveryapi.domain.menu.domain.MenuOptionRepository;
 import com.github.mingyu.fooddeliveryapi.domain.menu.domain.MenuRepository;
+import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ public class MenuService {
 
     /*메뉴 추가*/
     @Transactional
-    public void addMenu(MenuCreateRequestDto request) {
+    public void addMenu(MenuCreateRequest request) {
 
         Menu menu = menuMapper.toEntity(request);
         menu.setStatus(MenuStatus.ACTIVE);
@@ -36,7 +35,7 @@ public class MenuService {
         menuRepository.save(menu);
 
         List<MenuOption> options = new ArrayList<>();
-        for (MenuOptionCreateRequestDto option : request.getOptions()) {
+        for (MenuOptionCreateRequest option : request.getOptions()) {
             MenuOption menuOption = menuOptionMapper.toEntity(option);
             menuOption.setMenuId(menu.getMenuId());
             options.add(menuOption);
@@ -56,7 +55,7 @@ public class MenuService {
 
     /*메뉴 업데이트*/
     @Transactional
-    public void updateMenu(Long menuId, MenuUpdateRequestDto request) {
+    public void updateMenu(Long menuId, MenuUpdateRequest request) {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
 
@@ -72,7 +71,7 @@ public class MenuService {
 
         List<MenuOption> Options = new ArrayList<>();
 
-        for (MenuOptionUpdateRequestDto dto : request.getOptions()) {
+        for (MenuOptionUpdateRequest dto : request.getOptions()) {
             if (dto.getMenuOptionId() != null && currentOptionsById.containsKey(dto.getMenuOptionId())) {
                 // 기존 옵션 수정
                 MenuOption option = currentOptionsById.get(dto.getMenuOptionId());
@@ -95,19 +94,19 @@ public class MenuService {
     }
 
     /*단일 메뉴 목록 가져오기*/
-    public MenuResponseDto getMenu(Long menuId) {
+    public MenuResponse getMenu(Long menuId) {
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
         List<MenuOption> options = menuOptionRepository.findByMenu(menu);
 
-        MenuResponseDto menuResponseDto = menuMapper.toDto(menu);
-        List<MenuOptionResponseDto> menuOptionResponseDtos = menuOptionMapper.toDtoList(options);
+        MenuResponse menuResponseDto = menuMapper.toDto(menu);
+        List<MenuOptionResponse> menuOptionResponseDtos = menuOptionMapper.toDtoList(options);
         menuResponseDto.setOptions(menuOptionResponseDtos);
 
         return menuResponseDto;
     }
 
     /*가게 메뉴 목록 가져오기*/
-    public MenuListResponseDto searchMenus(MenuSearchCondition request) {
+    public MenuListResponse searchMenus(MenuSearchCondition request) {
         List<Menu> menus = menuRepository.findByStore_StoreId(request.getStoreId());
         List<MenuOption> allOptions = menuOptionRepository.findByMenuIn(menus);
 
@@ -115,18 +114,18 @@ public class MenuService {
         Map<Long, List<MenuOption>> optionsByMenuId = allOptions.stream()
                 .collect(Collectors.groupingBy(o -> o.getMenuId()));
 
-        List<MenuResponseDto> responseDto = new ArrayList<>();
+        List<MenuResponse> responseDto = new ArrayList<>();
 
         for (Menu menu : menus) {
-            MenuResponseDto menuDto = menuMapper.toDto(menu);
+            MenuResponse menuDto = menuMapper.toDto(menu);
 
             List<MenuOption> options = optionsByMenuId.getOrDefault(menu.getMenuId(), Collections.emptyList());
-            List<MenuOptionResponseDto> optionDto = menuOptionMapper.toDtoList(options);
+            List<MenuOptionResponse> optionDto = menuOptionMapper.toDtoList(options);
 
             menuDto.setOptions(optionDto);
             responseDto.add(menuDto);
         }
 
-        return new MenuListResponseDto(responseDto);
+        return new MenuListResponse(responseDto);
     }
 }

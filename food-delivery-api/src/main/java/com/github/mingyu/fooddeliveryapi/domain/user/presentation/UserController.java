@@ -1,7 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.domain.user.presentation;
 
-import com.github.mingyu.fooddeliveryapi.domain.user.domain.dto.UserRequestDto;
-import com.github.mingyu.fooddeliveryapi.domain.user.domain.dto.UserResponseDto;
+import com.github.mingyu.fooddeliveryapi.domain.user.presentation.dto.UserRequest;
+import com.github.mingyu.fooddeliveryapi.domain.user.presentation.dto.UserResponse;
 import com.github.mingyu.fooddeliveryapi.domain.user.application.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,29 +20,29 @@ public class UserController {
 
     @Operation(summary = "회원 가입", description = "새로운 사용자를 등록합니다.")
     @PostMapping("/user")
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserRequestDto userDto) {
-        UserResponseDto createdUser = userService.createUser(userDto);
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userDto) {
+        UserResponse createdUser = userService.createUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     @Operation(summary = "사용자 ID로 조회", description = "userId에 해당하는 사용자 정보를 반환합니다.")
     @GetMapping("/user/id/{userId}")
-    public ResponseEntity<UserResponseDto> getUser(@PathVariable Long userId) {
-        UserResponseDto user = userService.getUser(userId);
+    public ResponseEntity<UserResponse> getUser(@PathVariable Long userId) {
+        UserResponse user = userService.getUser(userId);
         return ResponseEntity.ok(user);
     }
 
     @Operation(summary = "이메일로 사용자 조회", description = "이메일을 기반으로 사용자 정보를 반환합니다.")
     @GetMapping("/user/email/{email}")
-    public ResponseEntity<UserResponseDto> getUserByEmail(@PathVariable String email) {
-        UserResponseDto user = userService.getUserByEmail(email);
+    public ResponseEntity<UserResponse> getUserByEmail(@PathVariable String email) {
+        UserResponse user = userService.getUserByEmail(email);
         return ResponseEntity.ok(user);
     }
 
     @Operation(summary = "회원 정보 수정", description = "사용자의 정보를 수정합니다.")
     @PutMapping("/user/{userId}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long userId, @RequestBody UserRequestDto userDto) {
-        UserResponseDto updatedUser = userService.updateUser(userId, userDto);
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long userId, @RequestBody UserRequest userDto) {
+        UserResponse updatedUser = userService.updateUser(userId, userDto);
         return ResponseEntity.ok(updatedUser);
     }
 

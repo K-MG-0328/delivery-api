@@ -4,10 +4,10 @@ package com.github.mingyu.fooddeliveryapi.domain.cart.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mingyu.fooddeliveryapi.domain.cart.domain.dto.CartItemAddRequestDto;
-import com.github.mingyu.fooddeliveryapi.domain.cart.domain.dto.CartItemResponseDto;
-import com.github.mingyu.fooddeliveryapi.domain.cart.domain.dto.CartResponseDto;
-import com.github.mingyu.fooddeliveryapi.domain.cart.domain.dto.CartUpdateDto;
+import com.github.mingyu.fooddeliveryapi.domain.cart.presentation.dto.CartItemAddRequest;
+import com.github.mingyu.fooddeliveryapi.domain.cart.presentation.dto.CartItemResponse;
+import com.github.mingyu.fooddeliveryapi.domain.cart.presentation.dto.CartResponse;
+import com.github.mingyu.fooddeliveryapi.domain.cart.presentation.dto.CartUpdate;
 import com.github.mingyu.fooddeliveryapi.domain.cart.domain.Cart;
 import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartItem;
 import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartItemOption;
@@ -45,7 +45,7 @@ public class CartService {
     * cart:synced:{userId} - 장바구니 캐시 DB 동기화 여부 true/false
     * */
 
-    public void addToCartItem(CartItemAddRequestDto request) {
+    public void addToCartItem(CartItemAddRequest request) {
 
         String cartKey = "cart:" + request.getUserId();
         String cartItemsKey = "cart:items:" + request.getUserId();
@@ -142,7 +142,7 @@ public class CartService {
         }
     }
 
-    public CartResponseDto getCart(Long userId) {
+    public CartResponse getCart(Long userId) {
         String cartKey = "cart:" + userId;
         String cartItemKey = "cart:items" + userId;
 
@@ -154,21 +154,21 @@ public class CartService {
             List<Cart> cartList = cartRepository.findByUserIdAndStatus(userId, CartStatus.ACTIVE);
             cartItems = cartItemRepository.findByCartId(cartList.get(0).getCartId());
             if(cartList.isEmpty()){
-                return CartResponseDto.empty(userId);
+                return CartResponse.empty(userId);
             }
             cartRedisTemplate.opsForValue().set(cartKey, cartList.get(0));
             cartItemRedisTemplate.opsForValue().set(cartItemKey, cartItems);
         }
 
         //장바구니 정보 반환
-        CartResponseDto cartResponseDto = cartMapper.toDto(cart);
-        List<CartItemResponseDto> cartItemResponseDto = cartItemMapper.toDtos(cartItems);
-        cartResponseDto.setItems(cartItemResponseDto);
+        CartResponse cartResponse = cartMapper.toDto(cart);
+        List<CartItemResponse> cartItemResponse = cartItemMapper.toDtos(cartItems);
+        cartResponse.setItems(cartItemResponse);
 
-        return cartResponseDto;
+        return cartResponse;
     }
 
-    public void updateQuantity(CartUpdateDto updateDto) {
+    public void updateQuantity(CartUpdate updateDto) {
         Long userId = updateDto.getUserId();
         Long cartItemId = updateDto.getCartItemId();
         String options = updateDto.getOptions();
@@ -204,7 +204,7 @@ public class CartService {
         cartEventProducer.sendCartEvent(event);
     }
 
-    public void removeItem(CartUpdateDto updateDto) {
+    public void removeItem(CartUpdate updateDto) {
 
         Long userId = updateDto.getUserId();
         Long cartItemId = updateDto.getCartItemId();

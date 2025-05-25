@@ -1,23 +1,25 @@
 package com.github.mingyu.fooddeliveryapi.domain.menu.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Menu {
 
+    public Menu(Long menuId, Long storeId, String name, Integer price, MenuStatus status) {
+        this.menuId = menuId;
+        this.storeId = storeId;
+        this.name = name;
+        this.price = price;
+        this.status = status;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long menuId;
+    private Long menuId; //UUID
 
     @Column(nullable = false)
     private Long storeId;
@@ -35,6 +37,9 @@ public class Menu {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuOption> options;
+
     @PrePersist
     protected void onCreate() {
         createdDate = LocalDateTime.now();
@@ -44,4 +49,10 @@ public class Menu {
     protected void onUpdate() {
         modifiedDate = LocalDateTime.now();
     }
+
+    public void addMenuOption(MenuOption menuOption) {
+        options.add(menuOption);
+        menuOption.addMenu(this);
+    }
+
 }
