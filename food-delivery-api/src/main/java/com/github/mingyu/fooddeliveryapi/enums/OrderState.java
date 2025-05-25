@@ -3,10 +3,8 @@ package com.github.mingyu.fooddeliveryapi.enums;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "주문 상태")
-public enum OrderStatus {
+public enum OrderState {
 
-    @Schema(description = "주문 생성 전")
-    BEFORE_CREATE,
     @Schema(description = "주문 생성")
     CREATED,
     @Schema(description = "주문 실패")

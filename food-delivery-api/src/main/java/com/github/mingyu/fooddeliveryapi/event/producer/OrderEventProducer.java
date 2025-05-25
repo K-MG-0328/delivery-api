@@ -18,10 +18,11 @@ public class OrderEventProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
+    /* 결제 완료 후 메시지 발행 */
     public void sendOrderPaidEvent(OrderPaidEvent event){
         try {
             String payload = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send("order-paid", payload);
+            kafkaTemplate.send("order-paid", event.getUserId().toString(), payload);
 
             log.info("Kafka 주문 결제 완료 이벤트 전송됨: {}", payload);
         }catch (JsonProcessingException e){

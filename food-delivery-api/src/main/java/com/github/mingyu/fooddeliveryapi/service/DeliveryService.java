@@ -1,8 +1,8 @@
 package com.github.mingyu.fooddeliveryapi.service;
 
+import com.github.mingyu.fooddeliveryapi.enums.DeliveryState;
 import com.github.mingyu.fooddeliveryapi.event.dto.DeliveryStatusMessage;
 import com.github.mingyu.fooddeliveryapi.entity.Delivery;
-import com.github.mingyu.fooddeliveryapi.enums.DeliveryStatus;
 import com.github.mingyu.fooddeliveryapi.event.dto.OrderPaidEvent;
 import com.github.mingyu.fooddeliveryapi.event.producer.DeliveryStatusEventProducer;
 import com.github.mingyu.fooddeliveryapi.repository.DeliveryRepository;
@@ -34,15 +34,15 @@ public class DeliveryService {
         delivery.setOrderId(event.getOrderId());
         delivery.setUserId(event.getUserId());
         delivery.setStoreId(event.getStoreId());
-        delivery.setStatus(DeliveryStatus.STARTED);
+        delivery.setStatus(DeliveryState.STARTED);
         delivery.setStartedDate(LocalDateTime.now());
 
         deliveryRepository.save(delivery);
 
         String key = "delivery:status:" + event.getOrderId();
-        redisTemplate.opsForValue().set(key, DeliveryStatus.STARTED.toString(), Duration.ofHours(2));
+        redisTemplate.opsForValue().set(key, DeliveryState.STARTED.toString(), Duration.ofHours(2));
 
-        DeliveryStatusMessage message = new DeliveryStatusMessage(event.getOrderId(), DeliveryStatus.STARTED.toString());
+        DeliveryStatusMessage message = new DeliveryStatusMessage(event.getOrderId(), DeliveryState.STARTED.toString());
         deliveryStatusEventProducer.sendDeliveryStatusEvent(message);
     }
 
@@ -58,15 +58,15 @@ public class DeliveryService {
         // 배송 완료
         List<Delivery> deliverys = deliveryRepository.getDeliveryByOrderId(orderId);
         Delivery delivery = deliverys.get(0);
-        delivery.setStatus(DeliveryStatus.DELIVERED);
+        delivery.setStatus(DeliveryState.DELIVERED);
         delivery.setCompletedDate(LocalDateTime.now());
 
         deliveryRepository.save(delivery);
 
         String key = "delivery:status:" + orderId;
-        redisTemplate.opsForValue().set(key, DeliveryStatus.DELIVERED.toString(), Duration.ofHours(2));
+        redisTemplate.opsForValue().set(key, DeliveryState.DELIVERED.toString(), Duration.ofHours(2));
 
-        DeliveryStatusMessage message = new DeliveryStatusMessage(orderId, DeliveryStatus.DELIVERED.toString());
+        DeliveryStatusMessage message = new DeliveryStatusMessage(orderId, DeliveryState.DELIVERED.toString());
         deliveryStatusEventProducer.sendDeliveryStatusEvent(message);
     }
 
@@ -74,15 +74,15 @@ public class DeliveryService {
 
         List<Delivery> deliverys = deliveryRepository.getDeliveryByOrderId(orderId);
         Delivery delivery = deliverys.get(0);
-        delivery.setStatus(DeliveryStatus.CANCELED);
+        delivery.setStatus(DeliveryState.CANCELED);
         delivery.setCompletedDate(LocalDateTime.now());
 
         deliveryRepository.save(delivery);
 
         String key = "delivery:status:" + orderId;
-        redisTemplate.opsForValue().set(key, DeliveryStatus.CANCELED.toString(), Duration.ofHours(2));
+        redisTemplate.opsForValue().set(key, DeliveryState.CANCELED.toString(), Duration.ofHours(2));
 
-        DeliveryStatusMessage message = new DeliveryStatusMessage(orderId, DeliveryStatus.CANCELED.toString());
+        DeliveryStatusMessage message = new DeliveryStatusMessage(orderId, DeliveryState.CANCELED.toString());
         deliveryStatusEventProducer.sendDeliveryStatusEvent(message);
     }
 }

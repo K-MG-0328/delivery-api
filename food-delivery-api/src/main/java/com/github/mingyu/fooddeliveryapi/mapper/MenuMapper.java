@@ -16,8 +16,5 @@ public interface MenuMapper {
     MenuResponseDto toDto(Menu menu);
 
     void updateFromDto(MenuUpdateRequestDto dto, @MappingTarget Menu menu);
-
-
-
     List<MenuResponseDto> toDtoList(List<Menu> menus);
 }

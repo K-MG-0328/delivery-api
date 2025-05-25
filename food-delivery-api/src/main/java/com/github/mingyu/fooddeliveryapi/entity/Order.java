@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.entity;
 
-import com.github.mingyu.fooddeliveryapi.enums.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.enums.OrderState;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,12 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity
-@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,33 +21,36 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    @Column(nullable = false)
+    private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId", nullable = false)
-    private Store store;
+    @Column(nullable = false)
+    private Long storeId;
+
+    @Column(nullable = false)
+    private String storeName;
+
+    @Column(nullable = false)
+    private String storePhone;
+
+    @Column(nullable = false)
+    private Long cartId;
 
     @Column(nullable = true, length = 255)
     private String paymentMethod;
 
     @Column(nullable = false)
-    private int totalPrice;
+    private Integer totalPrice;
 
     @Column(nullable = true, length = 255)
     private String requests;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 255)
-    private OrderStatus status;
+    private OrderState status;
 
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-
-    @ElementCollection
-    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
-    private List<OrderItem> items = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
@@ -60,9 +60,5 @@ public class Order {
     @PreUpdate
     protected void onUpdate() {
         modifiedDate = LocalDateTime.now();
-    }
-
-    public void addItem(OrderItem item) {
-        items.add(item);
     }
 }

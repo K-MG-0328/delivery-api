@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.dto.order;
 
-import com.github.mingyu.fooddeliveryapi.enums.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.enums.OrderState;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,5 +27,5 @@ public class OrderPaymentRequestDto {
     private String requests;
 
     @Schema(description = "주문 상태", example = "CREATED")
-    private OrderStatus status;
+    private OrderState status;
 }

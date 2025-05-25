@@ -4,7 +4,7 @@ package com.github.mingyu.fooddeliveryapi.enums;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "배송 상태 Enum")
-public enum DeliveryStatus {
+public enum DeliveryState {
 
     @Schema(description = "배송 준비 중")
     PREPARING,
