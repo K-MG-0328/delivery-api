@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.config;
 
-import com.github.mingyu.fooddeliveryapi.event.dto.CartEvent;
+import com.github.mingyu.fooddeliveryapi.domain.cart.event.CartEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
