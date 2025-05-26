@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Getter
 public class Menu {
 
+    protected Menu() {}
+
     public Menu(String menuId, String storeId, String name, Integer price, MenuStatus status, List<MenuOption> options) {
         this.menuId = menuId;
         this.storeId = storeId;

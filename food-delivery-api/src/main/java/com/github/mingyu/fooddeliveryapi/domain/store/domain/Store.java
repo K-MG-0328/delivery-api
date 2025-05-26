@@ -11,6 +11,8 @@ import java.util.Objects;
 @Getter
 public class Store {
 
+    protected Store() {}
+
     // 전체 필드 생성자
     public Store(
             String storeId,

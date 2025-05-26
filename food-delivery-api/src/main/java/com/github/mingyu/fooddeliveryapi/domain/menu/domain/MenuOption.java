@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 public class MenuOption {
 
+    protected MenuOption() {}
+
     public MenuOption(String menuOptionId, String optionName, Integer price, MenuOptionStatus status) {
         this.menuOptionId = menuOptionId;
         this.optionName = optionName;
