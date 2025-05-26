@@ -1,19 +1,42 @@
 package com.github.mingyu.fooddeliveryapi.domain.store.domain;
 
+import com.github.mingyu.fooddeliveryapi.domain.store.application.dto.StoreParam;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Store {
+
+    // 전체 필드 생성자
+    public Store(
+            String storeId,
+            String name,
+            String category,
+            String address,
+            String phone,
+            Integer minDeliveryPrice,
+            Integer deliveryTip,
+            DeliveryTime deliveryTime,
+            Double ratings,
+            StoreStatus status,
+            String deliveryAreas
+    ) {
+        this.storeId = storeId;
+        this.name = name;
+        this.category = category;
+        this.address = address;
+        this.phone = phone;
+        this.minDeliveryPrice = minDeliveryPrice;
+        this.deliveryTip = deliveryTip;
+        this.deliveryTime = deliveryTime;
+        this.ratings = ratings;
+        this.status = status;
+        this.deliveryAreas = deliveryAreas;
+    }
 
     @Id
     private String storeId;                   // 가게 ID (고유 식별자)
@@ -24,23 +47,20 @@ public class Store {
     @Column(nullable = false)
     private String category;                // 음식 카테고리 (예: 한식, 중식, 피자 등)
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String address;                 // 가게 주소
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String phone;                   // 가게 전화번호
 
     @Column(nullable = false)
-    private Integer minDeliveryPrice;           // 최소 주문 금액
+    private Integer minDeliveryPrice;       // 최소 주문 금액
 
     @Column(nullable = false)
-    private Integer deliveryTip;                // 배달 팁
+    private Integer deliveryTip;            // 배달 팁
 
-    @Column(nullable = false)
-    private Integer minDeliveryTime;            // 최소 배달 예상 시간 (분 단위)
-
-    @Column(nullable = false)
-    private Integer maxDeliveryTime;            // 최대 배달 예상 시간 (분 단위)
+    @Embedded
+    private DeliveryTime deliveryTime;      //배달 최대/최소 시간
 
     @Column(nullable = false)
     private Double ratings;                 // 가게 평점
@@ -64,5 +84,30 @@ public class Store {
     @PreUpdate
     protected void onUpdate() {
         modifiedDate = LocalDateTime.now();
+    }
+
+    public void update(StoreParam param) {
+
+        this.compare(param);
+        this.name = param.getName();
+        this.category = param.getCategory();
+        this.address = param.getAddress();
+        this.phone = param.getPhone();
+        this.minDeliveryPrice = param.getMinDeliveryPrice();
+        this.deliveryTip = param.getDeliveryTip();
+        this.deliveryTime = param.getDeliveryTime();
+        this.ratings = param.getRatings();
+        this.status = param.getStatus();
+        this.deliveryAreas = param.getDeliveryAreas();
+    }
+
+    public void compare(StoreParam param){
+        if(!Objects.equals(this.storeId, param.getStoreId())){
+            throw new RuntimeException("같은 가게가 아닙니다.");
+        }
+    }
+
+    public void changeStatus(StoreStatus status) {
+        this.status = status;
     }
 }

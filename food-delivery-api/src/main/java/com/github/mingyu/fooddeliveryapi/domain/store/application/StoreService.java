@@ -1,11 +1,13 @@
 package com.github.mingyu.fooddeliveryapi.domain.store.application;
 
+import com.github.mingyu.fooddeliveryapi.domain.store.application.dto.StoreParam;
 import com.github.mingyu.fooddeliveryapi.domain.store.domain.Store;
-import com.github.mingyu.fooddeliveryapi.domain.store.domain.StoreStatus;
+import com.github.mingyu.fooddeliveryapi.domain.store.domain.StoreFactory;
 import com.github.mingyu.fooddeliveryapi.domain.store.domain.StoreRepository;
-import com.github.mingyu.fooddeliveryapi.domain.store.presentation.dto.*;
+import com.github.mingyu.fooddeliveryapi.domain.store.domain.StoreStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,49 +18,51 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final StoreMapper storeMapper;
 
-    public StoreResponse createStore(StoreCreateRequest request) {
-        Store store = storeMapper.toEntity(request);
-        store.setStatus(StoreStatus.ACTIVE);
+    @Transactional
+    public void createStore(StoreParam param) {
+        Store store = StoreFactory.createStore(param);
         storeRepository.save(store);
-        StoreResponse responseDto = storeMapper.toDto(store);
-        return responseDto;
     }
 
-    public StoreResponse getStoreById(Long storeId) {
+    @Transactional(readOnly = true)
+    public StoreParam getStore(String storeId) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("가게를 찾을 수 없습니다."));
-        return storeMapper.toDto(store);
+        if(store.getStatus() == StoreStatus.DELETED) {
+            throw new RuntimeException("가게를 찾을 수 없습니다.");
+        }
+        StoreParam storeParam = storeMapper.toStoreParam(store);
+        return storeParam;
     }
 
-    public StoreResponse updateStore(Long storeId, StoreUpdateRequest request) {
+    @Transactional
+    public void updateStore(String storeId, StoreParam param) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("가게를 찾을 수 없습니다."));
-
-        storeMapper.updateFromDto(request, store);
-
+        if(store.getStatus() == StoreStatus.DELETED) {
+            throw new RuntimeException("가게를 찾을 수 없습니다.");
+        }
+        store.update(param);
         storeRepository.save(store);
-        StoreResponse responseDto = storeMapper.toDto(store);
-        return responseDto;
     }
 
-    public void deleteStore(Long storeId) {
+    @Transactional
+    public void deleteStore(String storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("가게를 찾을 수 없습니다."));
 
-        store.setStatus(StoreStatus.DELETED);
+        store.changeStatus(StoreStatus.DELETED);
         storeRepository.save(store);
     }
 
-    public StoreListResponse searchStores(StoreSearchCondition request) {
-        String name = request.getName();
-        String category = request.getCategory();
-        String address = request.getDeliveryAreas();
+    @Transactional(readOnly = true)
+    public List<StoreParam> searchStores(StoreParam param) {
 
+        String name = param.getName();
+        String category = param.getCategory();
+        String address = param.getDeliveryAreas();
 
         List<Store> stores = storeRepository.findByNameAndCategory(name, category, address);
-        List<StoreResponse> storeDto = storeMapper.toDtoList(stores);
+        List<StoreParam> storeParams = storeMapper.toStoreParam(stores);
 
-        StoreListResponse responseDto = new StoreListResponse();
-        responseDto.setStores(storeDto);
-
-        return responseDto;
+        return storeParams;
     }
 }

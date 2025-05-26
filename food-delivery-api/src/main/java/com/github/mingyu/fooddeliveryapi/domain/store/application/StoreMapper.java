@@ -1,23 +1,26 @@
 package com.github.mingyu.fooddeliveryapi.domain.store.application;
 
 
+import com.github.mingyu.fooddeliveryapi.domain.store.application.dto.StoreParam;
+import com.github.mingyu.fooddeliveryapi.domain.store.domain.Store;
 import com.github.mingyu.fooddeliveryapi.domain.store.presentation.dto.StoreCreateRequest;
 import com.github.mingyu.fooddeliveryapi.domain.store.presentation.dto.StoreResponse;
+import com.github.mingyu.fooddeliveryapi.domain.store.presentation.dto.StoreSearchCondition;
 import com.github.mingyu.fooddeliveryapi.domain.store.presentation.dto.StoreUpdateRequest;
-import com.github.mingyu.fooddeliveryapi.domain.store.domain.Store;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface StoreMapper {
 
-    Store toEntity(StoreCreateRequest dto);
+    StoreParam toStoreParam(Store store);
+    StoreParam toStoreParam(StoreCreateRequest request);
+    StoreParam toStoreParam(StoreUpdateRequest request);
+    StoreParam toStoreParam(StoreSearchCondition request);
 
-    void updateFromDto(StoreUpdateRequest dto, @MappingTarget Store store);
+    List<StoreParam> toStoreParam(List<Store> stores);
+    List<StoreResponse> toStoreResponse(List<StoreParam>  params);
 
-    StoreResponse toDto(Store store);
-
-    List<StoreResponse> toDtoList(List<Store> stores);
+    StoreResponse toStoreResponse(StoreParam param);
 }

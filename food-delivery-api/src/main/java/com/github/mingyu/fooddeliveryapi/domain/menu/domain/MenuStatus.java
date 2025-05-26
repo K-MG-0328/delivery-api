@@ -9,7 +9,5 @@ public enum MenuStatus {
     @Schema(description = "메뉴가 숨겨져 있으며 사용자에게 노출되지 않는 상태")
     INACTIVE,
     @Schema(description = "메뉴가 품절된 상태")
-    SOLD_OUT,
-    @Schema(description = "메뉴가 제거된 상태")
-    DELETED,
+    SOLD_OUT
 }

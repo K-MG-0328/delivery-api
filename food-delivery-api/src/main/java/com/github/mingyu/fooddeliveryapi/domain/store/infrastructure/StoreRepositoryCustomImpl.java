@@ -1,5 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.domain.store.infrastructure;
 
+import com.github.mingyu.fooddeliveryapi.domain.store.domain.StoreStatus;
 import com.github.mingyu.fooddeliveryapi.entity.QStore;
 import com.github.mingyu.fooddeliveryapi.domain.store.domain.Store;
 import com.github.mingyu.fooddeliveryapi.domain.store.domain.StoreRepositoryCustom;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class StoreRepositoryImpl implements StoreRepositoryCustom {
+public class StoreRepositoryCustomImpl implements StoreRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
@@ -24,7 +25,8 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
                 .where(
                         StringUtils.hasText(name) ? store.name.containsIgnoreCase(name) : null,
                         StringUtils.hasText(category) ? store.category.eq(category) : null,
-                        StringUtils.hasText(userAddress) ? store.deliveryAreas.contains(userAddress) : null
+                        StringUtils.hasText(userAddress) ? store.deliveryAreas.contains(userAddress) : null,
+                        store.status.ne(StoreStatus.DELETED)
                 )
                 .fetch();
     }

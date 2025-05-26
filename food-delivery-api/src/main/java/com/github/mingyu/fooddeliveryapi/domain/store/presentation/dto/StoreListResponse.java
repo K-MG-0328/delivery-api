@@ -1,6 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.domain.store.presentation.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Schema(description = "가게 목록 응답 DTO")
+@AllArgsConstructor
 public class StoreListResponse {
 
     @Schema(description = "가게 목록")
