@@ -36,13 +36,13 @@ public class MenuService {
     @Transactional
     public void updateMenu(String menuId, MenuParam param) {
 
-        //메뉴 검증
+        //메뉴 파라미터 검증
         MenuValidator.validateMenuParam(param);
 
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new RuntimeException("메뉴를 찾을 수 없습니다."));
-        //옵션 변경
-        menu.updateOptions(param.getOptions());
+        //메뉴 수정
+        menu.update(param);
         menuRepository.save(menu);
     }
 

@@ -3,10 +3,14 @@ package com.github.mingyu.fooddeliveryapi.domain.menu.presentation;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.MenuMapper;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.MenuService;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuParam;
-import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.*;
+import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.MenuCreateRequest;
+import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.MenuListResponse;
+import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.MenuResponse;
+import com.github.mingyu.fooddeliveryapi.domain.menu.presentation.dto.MenuUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +29,7 @@ public class MenuController {
     public ResponseEntity<Void> addMenu(@RequestBody MenuCreateRequest request) {
         MenuParam menuParam = menuMapper.toMenuParam(request);
         menuService.addMenu(menuParam);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "메뉴 삭제", description = "특정 메뉴를 삭제합니다.")

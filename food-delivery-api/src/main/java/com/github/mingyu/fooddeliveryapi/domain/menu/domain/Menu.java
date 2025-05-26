@@ -2,6 +2,7 @@ package com.github.mingyu.fooddeliveryapi.domain.menu.domain;
 
 import com.github.mingyu.fooddeliveryapi.common.util.IdGenerator;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuOptionParam;
+import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuParam;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -61,6 +63,16 @@ public class Menu {
         menuOption.addMenu(this);
     }
 
+    public void update(MenuParam newParam) {
+        this.compareMenu(newParam);
+
+        this.name = newParam.getName();
+        this.price = newParam.getPrice();
+        this.status = newParam.getStatus();
+
+        this.updateOptions(newParam.getOptions());
+    }
+
     public void updateOptions(List<MenuOptionParam> newOptionParams) {
         // 1. 현재 옵션을 Map으로 변환
         Map<String, MenuOption> currentOptionsById = this.options.stream()
@@ -93,5 +105,16 @@ public class Menu {
         // 4. 옵션 컬렉션 교체 (추가/수정)
         this.options.clear();
         this.options.addAll(finalOptions);
+    }
+
+
+    public void compareMenu(MenuParam newParam){
+        if(!Objects.equals(this.menuId, newParam.getMenuId())){
+            throw new RuntimeException("같은 메뉴가 아닙니다.");
+        }
+
+        if(!Objects.equals(this.storeId, newParam.getStoreId())){
+            throw new RuntimeException("같은 가게가 아닙니다.");
+        }
     }
 }
