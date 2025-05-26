@@ -49,4 +49,10 @@ public class MenuOption {
     public void addMenu(Menu menu) {
         this.menu = menu;
     }
+
+    public void changeOption(String name, int price, MenuOptionStatus status) {
+        this.optionName = name;
+        this.price = price;
+        this.status = status;
+    }
 }

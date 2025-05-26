@@ -1,10 +1,15 @@
 package com.github.mingyu.fooddeliveryapi.domain.menu.domain;
 
+import com.github.mingyu.fooddeliveryapi.common.util.IdGenerator;
+import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuOptionParam;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -56,9 +61,37 @@ public class Menu {
         menuOption.addMenu(this);
     }
 
-    public void addMenuOptionList(List<MenuOption> menuOptions) {
-        for (MenuOption menuOption : menuOptions) {
-            this.addMenuOption(menuOption);
+    public void updateOptions(List<MenuOptionParam> newOptionParams) {
+        // 1. 현재 옵션을 Map으로 변환
+        Map<String, MenuOption> currentOptionsById = this.options.stream()
+                .filter(o -> o.getMenuOptionId() != null)
+                .collect(Collectors.toMap(MenuOption::getMenuOptionId, o -> o));
+
+        // 2. 최종 옵션 목록 생성
+        List<MenuOption> finalOptions = new ArrayList<>();
+
+        for (MenuOptionParam param : newOptionParams) {
+            if (param.getMenuOptionId() != null && currentOptionsById.containsKey(param.getMenuOptionId())) {
+                // 수정 케이스
+                MenuOption option = currentOptionsById.get(param.getMenuOptionId());
+                option.changeOption(param.getOptionName(), param.getPrice(), param.getStatus());
+                finalOptions.add(option);
+                currentOptionsById.remove(param.getMenuOptionId());
+            } else {
+                // 추가 케이스
+                MenuOption option = new MenuOption(IdGenerator.uuid(), param.getOptionName(), param.getPrice(), param.getStatus());
+                option.addMenu(this);
+                finalOptions.add(option);
+            }
         }
+
+        // 3. 삭제 케이스: currentOptionsById에 남아 있는 것들
+        for (MenuOption deletedOption : currentOptionsById.values()) {
+            this.options.remove(deletedOption);
+        }
+
+        // 4. 옵션 컬렉션 교체 (추가/수정)
+        this.options.clear();
+        this.options.addAll(finalOptions);
     }
 }
