@@ -14,7 +14,6 @@ import java.util.List;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuOptionRepository menuOptionRepository;
     private final MenuMapper menuMapper;
 
     /*메뉴 추가*/

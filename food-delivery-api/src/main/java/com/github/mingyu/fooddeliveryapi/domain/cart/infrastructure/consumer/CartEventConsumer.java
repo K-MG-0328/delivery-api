@@ -2,13 +2,11 @@ package com.github.mingyu.fooddeliveryapi.domain.cart.infrastructure.consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.mingyu.fooddeliveryapi.domain.cart.application.CartService;
 import com.github.mingyu.fooddeliveryapi.domain.cart.domain.Cart;
-import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartItem;
+import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartRepository;
 import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartStatus;
 import com.github.mingyu.fooddeliveryapi.domain.cart.event.CartEvent;
-import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartItemRepository;
-import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartRepository;
-import com.github.mingyu.fooddeliveryapi.domain.cart.application.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -17,7 +15,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -27,7 +24,6 @@ public class CartEventConsumer {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
     private final ObjectMapper objectMapper;
 
     private static final String EVENT_QUEUE_PREFIX = "cart:events:queue:";
@@ -36,7 +32,6 @@ public class CartEventConsumer {
     @KafkaListener(topics = "cart-events", groupId = "cart-group")
     public void consume(CartEvent event) throws Exception {
         Cart cart = event.getCart();
-        List<CartItem> cartItems = event.getCartItems();
         String userId = cart.getUserId().toString();
         String syncedKey = "cart:synced:" + userId;
 
@@ -49,9 +44,8 @@ public class CartEventConsumer {
         // 즉시 동기화
         if (CartStatus.PAID.equals(cart.getStatus())) {
             if (cart != null && cart.getUserId() != null) {
-                cart.setStatus(CartStatus.PAID);
+                cart.changeStatus(CartStatus.PAID);
                 cartRepository.save(cart);
-                cartItemRepository.saveAll(cartItems);
                 cartService.clearCart(cart.getUserId());
             }
         } else {
@@ -91,10 +85,8 @@ public class CartEventConsumer {
             try {
                 CartEvent cartEvent = objectMapper.readValue(eventJson, CartEvent.class);
                 Cart cart = cartEvent.getCart();
-                List<CartItem> cartItems = cartEvent.getCartItems();
                 if (cart != null ) {
                     cartRepository.save(cart);
-                    cartItemRepository.saveAll(cartItems);
                     redisTemplate.opsForValue().set(syncedKey, "true");
                     redisTemplate.delete(eventQueueKey); // 큐 정리
                 }

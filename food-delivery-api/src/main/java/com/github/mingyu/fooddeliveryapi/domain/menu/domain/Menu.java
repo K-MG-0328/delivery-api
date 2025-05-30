@@ -61,8 +61,8 @@ public class Menu {
     }
 
     public void addMenuOption(MenuOption menuOption) {
-        options.add(menuOption);
         menuOption.addMenu(this);
+        options.add(menuOption);
     }
 
     public void update(MenuParam newParam) {

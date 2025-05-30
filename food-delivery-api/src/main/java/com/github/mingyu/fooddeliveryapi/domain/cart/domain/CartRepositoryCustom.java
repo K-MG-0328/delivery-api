@@ -4,4 +4,5 @@ import java.util.List;
 
 public interface CartRepositoryCustom {
     List<Cart> findByUserIdAndInStatus(Long userId, List<CartStatus> status);
+    long deleteCart(Cart cart);
 }

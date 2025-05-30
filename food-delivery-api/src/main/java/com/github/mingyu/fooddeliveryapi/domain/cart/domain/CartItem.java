@@ -1,30 +1,37 @@
 package com.github.mingyu.fooddeliveryapi.domain.cart.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CartItem {
 
+    protected CartItem() {}
+
+    public CartItem(String itemId, String menuId, String name, Integer price, Integer quantity) {
+        this.itemId = itemId;
+        this.menuId = menuId;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartItemId;
+    private String itemId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
     @Column(nullable = false)
-    private Long cartId;
+    private String menuId;
 
     @Column(nullable = false)
-    private Long menuId;
-
-    @Column(nullable = false)
-    private Long name;
+    private String name;
 
     @Column(nullable = false)
     private Integer price;
@@ -32,7 +39,29 @@ public class CartItem {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(columnDefinition = "json")
-    private String options = "[]";
+    @ElementCollection
+    @CollectionTable(name = "option", joinColumns = @JoinColumn(name = "cart_item_id"))
+    private List<CartItemOption> options = new ArrayList<>();
 
+    public void addCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public void addOptions(List<CartItemOption> options) {
+        this.options.addAll(options);
+    }
+
+    public void changeOptions(List<CartItemOption> options) {
+        this.options.clear();
+        this.options.addAll(options);
+    }
+
+    public void changeQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getPrice() {
+        int itemPrice = price + options.stream().mapToInt(CartItemOption::getPrice).sum();
+        return itemPrice;
+    }
 }

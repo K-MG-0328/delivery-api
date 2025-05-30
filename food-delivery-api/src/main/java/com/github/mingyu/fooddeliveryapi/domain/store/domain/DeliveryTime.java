@@ -8,6 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeliveryTime {
+
+    protected DeliveryTime() {};
+
     private Integer minMinutes;
     private Integer maxMinutes;
 }

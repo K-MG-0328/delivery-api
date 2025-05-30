@@ -13,22 +13,22 @@ import java.util.List;
 public class CartResponse {
 
     @Schema(description = "장바구니 ID", example = "1")
-    private Long cartId;
+    private String cartId;
 
     @Schema(description = "사용자 ID", example = "1")
     private Long userId;
 
     @Schema(description = "가게 ID", example = "5")
-    private Long storeId;
+    private String storeId;
 
     @Schema(description = "장바구니 상태", example = "ACTIVE")
     private CartStatus status;
 
     @Schema(description = "장바구니 항목 리스트")
-    private List<CartItemResponse> items;
+    private List<Item> items;
 
     @Schema(description = "장바구니 총 금액", example = "23000")
-    private int totalPrice;
+    private Integer totalPrice;
 
     public static CartResponse empty(Long userId) {
         CartResponse dto = new CartResponse();
