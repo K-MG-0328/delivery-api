@@ -1,6 +1,5 @@
 package com.github.mingyu.fooddeliveryapi.domain.order.infrastructure.producer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mingyu.fooddeliveryapi.domain.order.event.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
@@ -14,19 +13,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OrderEventProducer {
 
-    @Qualifier("stringKafkaTemplate")
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    @Qualifier("orderPaidKafkaTemplate")
+    private final KafkaTemplate<String, OrderPaidEvent> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
     /* 결제 완료 후 메시지 발행 */
     public void sendOrderPaidEvent(OrderPaidEvent event){
-        try {
-            String payload = objectMapper.writeValueAsString(event);
-            kafkaTemplate.send("order-paid", event.getUserId().toString(), payload);
-
-            log.info("Kafka 주문 결제 완료 이벤트 전송됨: {}", payload);
-        }catch (JsonProcessingException e){
-            throw new RuntimeException("주문 이벤트 실패", e);
-        }
+            String userId = event.getOrder().getUserId().toString();
+            kafkaTemplate.send("order-paid", userId, event);
+            log.info("Kafka 주문 결제 완료 이벤트 전송됨: {}", event.toString());
     }
 }

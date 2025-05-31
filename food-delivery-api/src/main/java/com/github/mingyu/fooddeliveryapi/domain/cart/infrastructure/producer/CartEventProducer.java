@@ -18,6 +18,6 @@ public class CartEventProducer {
     /* Cart 변경 사항에 대해서 메시지 발행 */
     public void sendCartEvent(CartEvent event){
         String userId = event.getCart().getUserId().toString();
-        kafkaTemplate.send("cart-events", userId, event);
+        kafkaTemplate.send("cart-sync", userId, event);
     }
 }

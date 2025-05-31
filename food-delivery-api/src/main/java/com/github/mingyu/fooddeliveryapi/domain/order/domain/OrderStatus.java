@@ -3,7 +3,7 @@ package com.github.mingyu.fooddeliveryapi.domain.order.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "주문 상태")
-public enum OrderState {
+public enum OrderStatus {
 
     @Schema(description = "주문 생성")
     CREATED,

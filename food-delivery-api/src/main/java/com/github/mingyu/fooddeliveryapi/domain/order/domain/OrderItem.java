@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain.cart.domain;
+package com.github.mingyu.fooddeliveryapi.domain.order.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import java.util.List;
 
 @Entity
 @Getter
-public class CartItem {
+public class OrderItem {
 
-    protected CartItem() {}
+    protected OrderItem() {}
 
-    public CartItem(String itemId, String menuId, String name, Integer price, Integer quantity) {
+    public OrderItem(String itemId, String menuId, String name, Integer price, Integer quantity) {
         this.itemId = itemId;
         this.menuId = menuId;
         this.name = name;
@@ -24,8 +24,8 @@ public class CartItem {
     private String itemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @Column(nullable = false)
     private String menuId;
@@ -41,27 +41,18 @@ public class CartItem {
 
     @ElementCollection
     @CollectionTable(name = "option", joinColumns = @JoinColumn(name = "item_id"))
-    private List<CartItemOption> options = new ArrayList<>();
+    private List<OrderItemOption> options = new ArrayList<>();
 
-    public void addCart(Cart cart) {
-        this.cart = cart;
+    public void addOrder(Order order) {
+        this.order = order;
     }
 
-    public void addOptions(List<CartItemOption> options) {
+    public void addOptions(List<OrderItemOption> options) {
         this.options.addAll(options);
-    }
-
-    public void changeOptions(List<CartItemOption> options) {
-        this.options.clear();
-        this.options.addAll(options);
-    }
-
-    public void changeQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
     public int getPrice() {
-        int itemPrice = price + options.stream().mapToInt(CartItemOption::getPrice).sum();
+        int itemPrice = price + options.stream().mapToInt(OrderItemOption::getPrice).sum();
         return itemPrice;
     }
 }

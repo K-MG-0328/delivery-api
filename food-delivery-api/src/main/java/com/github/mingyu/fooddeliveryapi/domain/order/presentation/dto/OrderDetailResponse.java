@@ -1,5 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto;
 
+import com.github.mingyu.fooddeliveryapi.domain.order.domain.PaymentMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,16 +27,22 @@ public class OrderDetailResponse {
     private String userName;
 
     @Schema(description = "가게 ID", example = "10")
-    private Long storeId;
+    private String storeId;
 
     @Schema(description = "가게 이름", example = "김밥천국")
     private String storeName;
 
+    @Schema(description = "가게 번호", example = "01011112222")
+    private String storePhone;
+
+    @Schema(description = "가게 주소", example = "01011112222")
+    private String storeAddress;
+
     @Schema(description = "결제 방식", example = "CARD")
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
     @Schema(description = "총 주문 금액", example = "23000")
-    private int totalPrice;
+    private Integer totalPrice;
 
     @Schema(description = "요청사항", example = "덜 맵게 해주세요")
     private String requests;

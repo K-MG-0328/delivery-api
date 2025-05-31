@@ -15,8 +15,5 @@ public interface CartMapper {
     CartParam toCartParam(Cart cart);
     CartParam toCartParam(CartRequest request);
     SingleCartParam toCartParam(CartRequest request);
-    CartItemParam toCartItemParam(Item item);
-
-
     CartResponse toCartResponse(CartParam cartParam);
 }

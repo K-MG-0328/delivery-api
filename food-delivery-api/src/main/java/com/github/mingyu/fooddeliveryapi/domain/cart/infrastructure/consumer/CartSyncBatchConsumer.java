@@ -2,10 +2,8 @@ package com.github.mingyu.fooddeliveryapi.domain.cart.infrastructure.consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mingyu.fooddeliveryapi.domain.cart.application.CartService;
 import com.github.mingyu.fooddeliveryapi.domain.cart.domain.Cart;
 import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartRepository;
-import com.github.mingyu.fooddeliveryapi.domain.cart.domain.CartStatus;
 import com.github.mingyu.fooddeliveryapi.domain.cart.event.CartEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +18,15 @@ import java.util.Set;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CartEventConsumer {
+public class CartSyncBatchConsumer {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final CartRepository cartRepository;
     private final ObjectMapper objectMapper;
 
     private static final String EVENT_QUEUE_PREFIX = "cart:events:queue:";
-    private final CartService cartService;
 
-    @KafkaListener(topics = "cart-events", groupId = "cart-group")
+    @KafkaListener(topics = "cart-sync", groupId = "cart-sync-batch")
     public void consume(CartEvent event) throws Exception {
         Cart cart = event.getCart();
         String userId = cart.getUserId().toString();
@@ -41,19 +38,10 @@ public class CartEventConsumer {
             return;
         }
 
-        // 즉시 동기화
-        if (CartStatus.PAID.equals(cart.getStatus())) {
-            if (cart != null && cart.getUserId() != null) {
-                cart.changeStatus(CartStatus.PAID);
-                cartRepository.save(cart);
-                cartService.clearCart(cart.getUserId());
-            }
-        } else {
-            // 이벤트를 Redis 리스트에 추가 (배치 처리 대기)
-            String eventQueueKey = EVENT_QUEUE_PREFIX + userId;
-            String eventJson = objectMapper.writeValueAsString(event);
-            redisTemplate.opsForList().rightPush(eventQueueKey, eventJson);
-        }
+        // 이벤트를 Redis 리스트에 추가 (배치 처리 대기)
+        String eventQueueKey = EVENT_QUEUE_PREFIX + userId;
+        String eventJson = objectMapper.writeValueAsString(event);
+        redisTemplate.opsForList().rightPush(eventQueueKey, eventJson);
     }
 
 

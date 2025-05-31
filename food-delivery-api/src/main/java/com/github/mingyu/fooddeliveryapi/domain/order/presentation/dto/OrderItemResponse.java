@@ -16,16 +16,16 @@ import java.util.List;
 public class OrderItemResponse {
 
     @Schema(description = "메뉴 ID", example = "101")
-    private Long menuId;
+    private String menuId;
 
     @Schema(description = "메뉴 이름", example = "불고기 덮밥")
-    private String menuName;
+    private String name;
 
     @Schema(description = "주문 수량", example = "2")
-    private int quantity;
+    private Integer quantity;
 
     @Schema(description = "메뉴 가격", example = "12000")
-    private int menuPrice;
+    private Integer price;
 
     @Schema(description = "선택한 옵션 목록")
     private List<OrderItemOptionResponse> options;

@@ -1,5 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.domain.order.event;
 
+import com.github.mingyu.fooddeliveryapi.domain.order.domain.Order;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderPaidEvent {
-    private Long orderId;
-    private Long userId;
-    private Long storeId;
-    private int totalPrice;
+    private Order order;
     private String paidDate; //결제 시간
-    private String deliveryAddress;
 }

@@ -17,5 +17,5 @@ public class OrderItemOptionResponse {
     private String optionName;
 
     @Schema(description = "옵션 가격", example = "1000")
-    private int optionPrice;
+    private Integer price;
 }
