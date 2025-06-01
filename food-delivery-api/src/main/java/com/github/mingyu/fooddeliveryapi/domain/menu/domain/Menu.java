@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.domain.menu.domain;
 
-import com.github.mingyu.fooddeliveryapi.common.util.IdGenerator;
+import com.github.mingyu.fooddeliveryapi.common.util.IdCreator;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuOptionParam;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuParam;
 import jakarta.persistence.*;
@@ -93,7 +93,7 @@ public class Menu {
                 currentOptionsById.remove(param.getMenuOptionId());
             } else {
                 // 추가 케이스
-                MenuOption option = new MenuOption(IdGenerator.uuid(), param.getOptionName(), param.getPrice(), param.getStatus());
+                MenuOption option = new MenuOption(IdCreator.randomUuid(), param.getOptionName(), param.getPrice(), param.getStatus());
                 option.addMenu(this);
                 finalOptions.add(option);
             }

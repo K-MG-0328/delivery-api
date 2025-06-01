@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.domain.menu.domain;
 
-import com.github.mingyu.fooddeliveryapi.common.util.IdGenerator;
+import com.github.mingyu.fooddeliveryapi.common.util.IdCreator;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuOptionParam;
 import com.github.mingyu.fooddeliveryapi.domain.menu.application.dto.MenuParam;
 
@@ -27,14 +27,14 @@ public class MenuFactory {
 
     // 옵션이 없을 경우
     public static Menu createMenu(String storeId, String name, int price) {
-        String menuId = IdGenerator.uuid();
+        String menuId = IdCreator.randomUuid();
         MenuValidator.validateMenu(menuId, storeId, name, price, null);
         return new Menu(menuId, storeId, name, price, MenuStatus.ACTIVE, new ArrayList<>());
     }
 
     // 옵션 있을 경우
     public static Menu createMenuWithOptions(String storeId, String name, int price, List<MenuOptionParam> options) {
-        String menuId = IdGenerator.uuid();
+        String menuId = IdCreator.randomUuid();
         MenuValidator.validateMenu(menuId, storeId, name, price, options);
         Menu menu = new Menu(menuId, storeId, name, price, MenuStatus.ACTIVE, new ArrayList<>());
         createMenuOptionList(menu, options);
@@ -44,7 +44,7 @@ public class MenuFactory {
     // 메뉴 옵션 목록 생성
     public static void createMenuOptionList(Menu menu, List<MenuOptionParam> options) {
         for (MenuOptionParam option : options) {
-            String optionId = IdGenerator.uuid();
+            String optionId = IdCreator.randomUuid();
             String optionName = option.getOptionName();
             int price = option.getPrice();
             MenuOption menuOption = new MenuOption(optionId, optionName, price, MenuOptionStatus.ACTIVE);

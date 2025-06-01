@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.domain.store.domain;
 
-import com.github.mingyu.fooddeliveryapi.common.util.IdGenerator;
+import com.github.mingyu.fooddeliveryapi.common.util.IdCreator;
 import com.github.mingyu.fooddeliveryapi.domain.store.application.dto.StoreParam;
 
 public class StoreFactory {
@@ -34,7 +34,7 @@ public class StoreFactory {
                                    String deliveryAreas ) {
 
         StoreValidator.validate(name, category, address, phone, minDeliveryPrice, deliveryTip, deliveryTime, ratings, status, deliveryAreas);
-        String storeId = IdGenerator.uuid();
+        String storeId = IdCreator.randomUuid();
         return new Store(storeId, name, category, address, phone, minDeliveryPrice, deliveryTip, deliveryTime, ratings, status, deliveryAreas);
     }
 

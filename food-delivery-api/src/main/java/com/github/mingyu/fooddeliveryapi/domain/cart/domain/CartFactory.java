@@ -1,6 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.domain.cart.domain;
 
-import com.github.mingyu.fooddeliveryapi.common.util.IdGenerator;
+import com.github.mingyu.fooddeliveryapi.common.util.IdCreator;
 import com.github.mingyu.fooddeliveryapi.domain.cart.application.dto.*;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class CartFactory {
 
     public static Cart createCart(Long userId, String storeId, List<CartItemParam> items) {
 
-        String cartId = IdGenerator.uuid();
+        String cartId = IdCreator.randomUuid();
         Cart cart = new Cart(cartId, userId, storeId, CartStatus.ACTIVE);
 
         if(items.isEmpty()){
@@ -45,7 +45,7 @@ public class CartFactory {
     }
 
     public static CartItem createCartItem(CartItemParam item) {
-        String itemId = IdGenerator.uuid();
+        String itemId = IdCreator.randomUuid();
         CartItem cartItem = new CartItem(itemId, item.getMenuId(), item.getName(), item.getPrice(), item.getQuantity());
         List<CartItemOption> cartItemOptions = createCartItemOptions(itemId, item.getOptions());
         cartItem.addOptions(cartItemOptions);
@@ -53,7 +53,7 @@ public class CartFactory {
     }
 
     public static List<CartItem> createCartItems(List<CartItemParam> items) {
-        String itemId = IdGenerator.uuid();
+        String itemId = IdCreator.randomUuid();
         List<CartItem> cartItems = new ArrayList<>();
         for (CartItemParam param : items) {
             CartItem cartItem = new CartItem(itemId, param.getMenuId(), param.getName(), param.getPrice(), param.getQuantity());

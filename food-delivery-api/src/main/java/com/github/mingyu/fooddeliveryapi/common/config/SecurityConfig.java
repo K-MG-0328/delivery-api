@@ -1,7 +1,6 @@
 package com.github.mingyu.fooddeliveryapi.common.config;
 
 import com.github.mingyu.fooddeliveryapi.domain.user.application.security.*;
-import com.github.mingyu.fooddeliveryapi.security.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
