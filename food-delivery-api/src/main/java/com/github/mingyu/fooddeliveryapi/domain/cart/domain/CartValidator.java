@@ -1,10 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.domain.cart.domain;
 
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 
-@RequiredArgsConstructor
 public class CartValidator {
 
     public static void validateCart(Cart cart) {
