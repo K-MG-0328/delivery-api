@@ -73,7 +73,7 @@ public class UserService
     @Transactional
     public void deleteUser(String userId) {
         User user = userRepositoryPort.findById(userId);
-        user.changeStatus(UserStatus.DELETED);
+        user.changeStatus(UserStatus.INACTIVE);
         userRepositoryPort.save(user);
     }
 }

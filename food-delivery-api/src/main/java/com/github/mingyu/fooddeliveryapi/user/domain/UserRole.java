@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public enum UserRole {
     @Schema(description = "일반 사용자")
     USER,
-    @Schema(description = "관리자")
-    ADMIN
+    @Schema(description = "라이더")
+    RIDER,
+    @Schema(description = "가게 사장")
+    STORE_OWNER,
 }

@@ -7,5 +7,5 @@ public enum UserStatus {
     @Schema(description = "활성 상태")
     ACTIVE,
     @Schema(description = "탈퇴 상태")
-    DELETED
+    INACTIVE
 }
