@@ -1,8 +1,8 @@
 package com.github.mingyu.fooddeliveryapi.menu.application.service;
 
-import com.github.mingyu.fooddeliveryapi.menu.adapter.in.response.MenuListResponse;
-import com.github.mingyu.fooddeliveryapi.menu.adapter.in.response.MenuOptionResponse;
-import com.github.mingyu.fooddeliveryapi.menu.adapter.in.response.MenuResponse;
+import com.github.mingyu.fooddeliveryapi.menu.adapter.in.web.response.MenuListResponse;
+import com.github.mingyu.fooddeliveryapi.menu.adapter.in.web.response.MenuOptionResponse;
+import com.github.mingyu.fooddeliveryapi.menu.adapter.in.web.response.MenuResponse;
 import com.github.mingyu.fooddeliveryapi.menu.application.port.in.MenuCrudUseCase;
 import com.github.mingyu.fooddeliveryapi.menu.application.port.in.command.MenuCreateCommand;
 import com.github.mingyu.fooddeliveryapi.menu.application.port.in.command.MenuUpdateCommand;

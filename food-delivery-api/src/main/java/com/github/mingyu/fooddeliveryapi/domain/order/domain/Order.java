@@ -27,7 +27,7 @@ public class Order {
     private String orderId;
 
     @Column(nullable = false)
-    private Long userId;
+    private String userId;
 
     @Embedded
     StoreInfo storeInfo;
