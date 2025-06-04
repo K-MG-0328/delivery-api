@@ -1,7 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.user.common.security;
 
 import com.github.mingyu.fooddeliveryapi.user.domain.User;
-import com.github.mingyu.fooddeliveryapi.user.adapter.out.Persistence.UserRepository;
+import com.github.mingyu.fooddeliveryapi.user.adapter.out.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

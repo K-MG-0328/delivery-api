@@ -10,6 +10,7 @@ import com.github.mingyu.fooddeliveryapi.user.application.port.in.command.UserCr
 import com.github.mingyu.fooddeliveryapi.user.application.port.in.command.UserUpdateCommand;
 import com.github.mingyu.fooddeliveryapi.user.application.port.out.UserRepositoryPort;
 import com.github.mingyu.fooddeliveryapi.user.domain.*;
+import com.github.mingyu.fooddeliveryapi.user.domain.exception.InactiveUserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class UserService
         User user = UserFactory.create(command, encodedPassword);
 
         //검증로직
-        Validator.validate(user);
+        UserValidator.validate(user);
         userRepositoryPort.save(user);
     }
 

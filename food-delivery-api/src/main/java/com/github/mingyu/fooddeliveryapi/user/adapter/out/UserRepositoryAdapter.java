@@ -1,7 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.user.adapter.out;
 
 import com.github.mingyu.fooddeliveryapi.common.PersistentAdapter;
-import com.github.mingyu.fooddeliveryapi.user.adapter.out.Persistence.UserRepository;
+import com.github.mingyu.fooddeliveryapi.user.adapter.out.persistence.UserRepository;
 import com.github.mingyu.fooddeliveryapi.user.application.port.out.UserRepositoryPort;
 import com.github.mingyu.fooddeliveryapi.user.domain.User;
 import lombok.RequiredArgsConstructor;
