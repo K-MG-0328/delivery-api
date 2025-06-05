@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/food-delivery-api/delivery-platform.food-delivery-api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/food-delivery-api/delivery-platform.food-delivery-api.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/websocket/delivery-platform.websocket.main.iml" filepath="$PROJECT_DIR$/.idea/modules/websocket/delivery-platform.websocket.main.iml" />
+    </modules>
+  </component>
+</project>
