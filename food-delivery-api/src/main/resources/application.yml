@@ -1,17 +1,17 @@
 secret:
-  key: mySuperSecureJwtSecretKeyThatIsLongEnough
+  key: ${JWT_SECRET:changeme-please-set-via-env-min-32-chars-long}
 
 spring:
   application:
     name: food-delivery-api
   datasource:
-    url: jdbc:mysql://localhost:3306/fooddelivery_db
-    username: root
-    password: test1234
+    url: ${DB_URL:jdbc:mysql://localhost:3306/fooddelivery_db}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:changeme}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${JPA_DDL_AUTO:update}
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -19,10 +19,10 @@ spring:
     show-sql: true
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
   kafka:
-    bootstrap-servers: 172.31.0.111:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: delivery-service
       auto-offset-reset: earliest
@@ -34,13 +34,5 @@ spring:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
     org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
-#logging:
-#  level:
-#    org:
-#      springframework.cache: trace
-#      hibernate.type.descriptor.sql.BasicBinder: TRACE
-
-

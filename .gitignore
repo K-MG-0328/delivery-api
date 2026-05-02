@@ -1,5 +1,26 @@
-# Ignore Gradle project-specific cache directory
+# Gradle
 .gradle
+build/
 
-# Ignore Gradle build output directory
-build
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Secrets / Keys
+*.pem
+*.key
+*.p12
+*.pfx
+.env
+DB정보.txt
