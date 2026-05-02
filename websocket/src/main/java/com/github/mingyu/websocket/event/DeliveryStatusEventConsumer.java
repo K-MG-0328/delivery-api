@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mingyu.websocket.config.DeliveryWebSocketHandler;
-import com.github.mingyu.websocket.dto.DeliveryStatusMessage;
+import com.github.mingyu.common.event.DeliveryStatusMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

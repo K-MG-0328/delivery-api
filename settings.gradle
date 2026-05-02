@@ -7,5 +7,6 @@
  */
 
 rootProject.name = 'delivery-platform'
+include 'common-event'
 include 'food-delivery-api'
 include 'websocket'

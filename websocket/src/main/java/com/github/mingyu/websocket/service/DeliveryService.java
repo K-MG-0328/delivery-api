@@ -5,7 +5,7 @@ package com.github.mingyu.websocket.service;
 * 라이더 관점 - 서버에게 실시간 위치 polling
 * */
 
-import com.github.mingyu.websocket.dto.DeliveryStatusMessage;
+import com.github.mingyu.common.event.DeliveryStatusMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,6 @@ public class DeliveryService {
     private final SimpMessagingTemplate messagingTemplate;
 
     public void sendStatusUpdate(DeliveryStatusMessage message) {
-        messagingTemplate.convertAndSend("/topic/delivery-status/" + message.getOrderId(), message);
+        messagingTemplate.convertAndSend("/topic/delivery-status/" + message.orderId(), message);
     }
 }
