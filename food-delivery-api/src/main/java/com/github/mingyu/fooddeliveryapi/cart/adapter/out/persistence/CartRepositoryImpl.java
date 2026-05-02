@@ -2,6 +2,8 @@ package com.github.mingyu.fooddeliveryapi.cart.adapter.out.persistence;
 
 import com.github.mingyu.fooddeliveryapi.cart.domain.Cart;
 import com.github.mingyu.fooddeliveryapi.cart.domain.CartStatus;
+import com.github.mingyu.fooddeliveryapi.cart.domain.QCart;
+import com.github.mingyu.fooddeliveryapi.cart.domain.QCartItem;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

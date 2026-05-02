@@ -2,6 +2,7 @@ package com.github.mingyu.fooddeliveryapi.store.adapter.out.persistence;
 
 import com.github.mingyu.fooddeliveryapi.store.domain.StoreStatus;
 import com.github.mingyu.fooddeliveryapi.store.domain.Store;
+import com.github.mingyu.fooddeliveryapi.store.domain.QStore;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
