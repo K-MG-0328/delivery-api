@@ -1,8 +1,8 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.application.dto;
+package com.github.mingyu.fooddeliveryapi.order.application.port.in.command;
 
 
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.OrderStatus;
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.PaymentMethod;
+import com.github.mingyu.fooddeliveryapi.order.domain.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.order.domain.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderParam implements OrderCommand {
     private String orderId;
-    private Long userId;
+    private String userId;
     private String storeId;
     private String storeName;
     private String storePhone;

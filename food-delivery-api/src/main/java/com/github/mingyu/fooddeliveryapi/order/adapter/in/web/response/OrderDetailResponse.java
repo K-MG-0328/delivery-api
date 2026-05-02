@@ -1,6 +1,6 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto;
+package com.github.mingyu.fooddeliveryapi.order.adapter.in.web.response;
 
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.PaymentMethod;
+import com.github.mingyu.fooddeliveryapi.order.domain.PaymentMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +18,10 @@ import java.util.List;
 public class OrderDetailResponse {
 
     @Schema(description = "주문 ID", example = "1001")
-    private Long orderId;
+    private String orderId;
 
     @Schema(description = "사용자 ID", example = "1")
-    private Long userId;
+    private String userId;
 
     @Schema(description = "사용자 이름", example = "홍길동")
     private String userName;

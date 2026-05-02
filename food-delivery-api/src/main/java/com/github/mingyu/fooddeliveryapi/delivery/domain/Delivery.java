@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain.delivery.domain;
+package com.github.mingyu.fooddeliveryapi.delivery.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,13 +20,13 @@ public class Delivery {
     private Long deliveryId;
 
     @Column(nullable = false)
-    private Long userId;
+    private String userId;
 
     @Column(nullable = false)
-    private Long storeId;
+    private String storeId;
 
     @Column(nullable = false)
-    private Long orderId;
+    private String orderId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

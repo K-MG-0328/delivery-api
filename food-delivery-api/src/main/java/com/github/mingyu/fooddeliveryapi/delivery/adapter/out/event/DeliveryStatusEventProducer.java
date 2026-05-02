@@ -1,8 +1,8 @@
-package com.github.mingyu.fooddeliveryapi.domain.delivery.infrastructure.producer;
+package com.github.mingyu.fooddeliveryapi.delivery.adapter.out.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mingyu.fooddeliveryapi.domain.delivery.event.DeliveryStatusMessage;
+import com.github.mingyu.common.event.DeliveryStatusMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;

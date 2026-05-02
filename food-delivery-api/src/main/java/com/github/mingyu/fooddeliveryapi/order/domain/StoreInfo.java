@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.domain;
+package com.github.mingyu.fooddeliveryapi.order.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

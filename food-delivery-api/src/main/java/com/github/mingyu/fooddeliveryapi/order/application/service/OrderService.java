@@ -1,12 +1,12 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.application;
+package com.github.mingyu.fooddeliveryapi.order.application.service;
 
-import com.github.mingyu.fooddeliveryapi.domain.order.application.dto.OrderParam;
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.Order;
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.OrderFactory;
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.OrderRepository;
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.OrderStatus;
-import com.github.mingyu.fooddeliveryapi.domain.order.event.OrderPaidEvent;
-import com.github.mingyu.fooddeliveryapi.domain.order.infrastructure.producer.OrderEventProducer;
+import com.github.mingyu.fooddeliveryapi.order.application.port.in.command.OrderParam;
+import com.github.mingyu.fooddeliveryapi.order.domain.Order;
+import com.github.mingyu.fooddeliveryapi.order.domain.OrderFactory;
+import com.github.mingyu.fooddeliveryapi.order.application.port.out.OrderRepositoryPort;
+import com.github.mingyu.fooddeliveryapi.order.domain.OrderStatus;
+import com.github.mingyu.fooddeliveryapi.order.domain.event.OrderPaidEvent;
+import com.github.mingyu.fooddeliveryapi.order.adapter.out.event.OrderEventProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final OrderRepository orderRepository;
+    private final OrderRepositoryPort orderRepository;
     private final OrderMapper orderMapper;
     private final OrderEventProducer orderEventProducer;
 
@@ -39,8 +39,8 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderParam> getUserOrders(Long userId) {
-        List<Order> orders = orderRepository.findByUser_UserId(userId);
+    public List<OrderParam> getUserOrders(String userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
         List<OrderParam> orderList = orders.stream()
                 .map(orderMapper::toOrderParam)
                 .collect(Collectors.toList());

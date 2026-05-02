@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.application.dto;
+package com.github.mingyu.fooddeliveryapi.order.application.port.in.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

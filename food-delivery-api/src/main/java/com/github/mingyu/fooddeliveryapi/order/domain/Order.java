@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.domain;
+package com.github.mingyu.fooddeliveryapi.order.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ public class Order {
 
     protected Order() {}
 
-    public Order(String orderId, Long userId, StoreInfo storeInfo, OrderStatus status) {
+    public Order(String orderId, String userId, StoreInfo storeInfo, OrderStatus status) {
         this.orderId = orderId;
         this.userId = userId;
         this.storeInfo = storeInfo;

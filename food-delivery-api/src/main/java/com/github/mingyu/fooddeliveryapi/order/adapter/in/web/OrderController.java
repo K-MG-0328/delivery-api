@@ -1,9 +1,11 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.presentation;
+package com.github.mingyu.fooddeliveryapi.order.adapter.in.web;
 
-import com.github.mingyu.fooddeliveryapi.domain.order.application.OrderMapper;
-import com.github.mingyu.fooddeliveryapi.domain.order.application.OrderService;
-import com.github.mingyu.fooddeliveryapi.domain.order.application.dto.OrderParam;
-import com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto.*;
+import com.github.mingyu.fooddeliveryapi.order.application.service.OrderMapper;
+import com.github.mingyu.fooddeliveryapi.order.application.service.OrderService;
+import com.github.mingyu.fooddeliveryapi.order.application.port.in.command.OrderParam;
+import com.github.mingyu.fooddeliveryapi.order.adapter.in.web.request.OrderCreateRequest;
+import com.github.mingyu.fooddeliveryapi.order.adapter.in.web.response.OrderDetailResponse;
+import com.github.mingyu.fooddeliveryapi.order.adapter.in.web.response.OrderListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,7 @@ public class OrderController {
 
     @Operation(summary = "사용자 주문 목록 조회", description = "사용자의 모든 주문 목록을 반환합니다.")
     @GetMapping("/order")
-    public ResponseEntity<OrderListResponse> getUserOrders(@RequestParam Long userId) {
+    public ResponseEntity<OrderListResponse> getUserOrders(@RequestParam String userId) {
         List<OrderParam> userOrders = orderService.getUserOrders(userId);
         List<OrderDetailResponse> responses = orderMapper.toOrderDetailResponses(userOrders);
         OrderListResponse responseWrapper = new OrderListResponse(responses);

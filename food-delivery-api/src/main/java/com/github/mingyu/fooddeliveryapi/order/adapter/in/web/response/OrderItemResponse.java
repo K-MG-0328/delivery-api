@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto;
+package com.github.mingyu.fooddeliveryapi.order.adapter.in.web.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

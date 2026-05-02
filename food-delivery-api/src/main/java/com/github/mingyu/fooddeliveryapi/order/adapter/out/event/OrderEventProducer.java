@@ -1,7 +1,7 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.infrastructure.producer;
+package com.github.mingyu.fooddeliveryapi.order.adapter.out.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mingyu.fooddeliveryapi.domain.order.event.OrderPaidEvent;
+import com.github.mingyu.fooddeliveryapi.order.domain.event.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;

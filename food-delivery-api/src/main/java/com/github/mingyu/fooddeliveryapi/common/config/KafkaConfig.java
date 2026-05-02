@@ -1,7 +1,7 @@
 package com.github.mingyu.fooddeliveryapi.common.config;
 
 import com.github.mingyu.fooddeliveryapi.cart.domain.CartEvent;
-import com.github.mingyu.fooddeliveryapi.domain.order.event.OrderPaidEvent;
+import com.github.mingyu.fooddeliveryapi.order.domain.event.OrderPaidEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

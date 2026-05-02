@@ -1,10 +1,10 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.domain;
+package com.github.mingyu.fooddeliveryapi.order.domain;
 
 import com.github.mingyu.fooddeliveryapi.common.util.IdCreator;
-import com.github.mingyu.fooddeliveryapi.domain.order.application.dto.OrderCommand;
-import com.github.mingyu.fooddeliveryapi.domain.order.application.dto.OrderItemOptionParam;
-import com.github.mingyu.fooddeliveryapi.domain.order.application.dto.OrderItemParam;
-import com.github.mingyu.fooddeliveryapi.domain.order.application.dto.OrderParam;
+import com.github.mingyu.fooddeliveryapi.order.application.port.in.command.OrderCommand;
+import com.github.mingyu.fooddeliveryapi.order.application.port.in.command.OrderItemOptionParam;
+import com.github.mingyu.fooddeliveryapi.order.application.port.in.command.OrderItemParam;
+import com.github.mingyu.fooddeliveryapi.order.application.port.in.command.OrderParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class OrderFactory {
         return order;
     }
 
-    public static Order createOrder(Long userId, StoreInfo storeInfo, List<OrderItemParam> items) {
+    public static Order createOrder(String userId, StoreInfo storeInfo, List<OrderItemParam> items) {
 
         String orderId = IdCreator.randomUuid();
         Order order = new Order(orderId, userId, storeInfo, OrderStatus.CREATED);

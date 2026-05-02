@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.domain;
+package com.github.mingyu.fooddeliveryapi.order.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -52,7 +52,7 @@ public class OrderItem {
     }
 
     public int getPrice() {
-        int itemPrice = price + options.stream().mapToInt(OrderItemOption::getPrice).sum();
+        int itemPrice = price + options.stream().mapToInt(o -> o.getPrice()).sum();
         return itemPrice;
     }
 }

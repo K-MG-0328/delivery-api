@@ -1,4 +1,4 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.domain;
+package com.github.mingyu.fooddeliveryapi.order.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

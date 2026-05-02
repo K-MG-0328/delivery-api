@@ -1,6 +1,6 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto;
+package com.github.mingyu.fooddeliveryapi.order.adapter.in.web.request;
 
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.PaymentMethod;
+import com.github.mingyu.fooddeliveryapi.order.domain.PaymentMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;

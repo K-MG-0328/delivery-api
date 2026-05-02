@@ -2,7 +2,7 @@ package com.github.mingyu.fooddeliveryapi.common.config;
 
 import com.github.mingyu.fooddeliveryapi.cart.domain.Cart;
 import com.github.mingyu.fooddeliveryapi.cart.domain.CartItem;
-import com.github.mingyu.fooddeliveryapi.domain.delivery.domain.DeliveryState;
+import com.github.mingyu.fooddeliveryapi.delivery.domain.DeliveryState;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.redis.spring.RedisLockProvider;
 import org.springframework.context.annotation.Bean;

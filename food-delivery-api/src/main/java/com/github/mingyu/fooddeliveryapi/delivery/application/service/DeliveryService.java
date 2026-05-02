@@ -1,11 +1,12 @@
-package com.github.mingyu.fooddeliveryapi.domain.delivery.application;
+package com.github.mingyu.fooddeliveryapi.delivery.application.service;
 
-import com.github.mingyu.fooddeliveryapi.domain.delivery.domain.DeliveryState;
-import com.github.mingyu.fooddeliveryapi.domain.delivery.event.DeliveryStatusMessage;
-import com.github.mingyu.fooddeliveryapi.domain.delivery.domain.Delivery;
-import com.github.mingyu.fooddeliveryapi.domain.order.event.OrderPaidEvent;
-import com.github.mingyu.fooddeliveryapi.domain.delivery.infrastructure.producer.DeliveryStatusEventProducer;
-import com.github.mingyu.fooddeliveryapi.domain.delivery.domain.DeliveryRepository;
+import com.github.mingyu.fooddeliveryapi.delivery.domain.DeliveryState;
+import com.github.mingyu.common.event.DeliveryStatusMessage;
+import com.github.mingyu.fooddeliveryapi.delivery.domain.Delivery;
+import com.github.mingyu.fooddeliveryapi.order.domain.Order;
+import com.github.mingyu.fooddeliveryapi.order.domain.event.OrderPaidEvent;
+import com.github.mingyu.fooddeliveryapi.delivery.adapter.out.event.DeliveryStatusEventProducer;
+import com.github.mingyu.fooddeliveryapi.delivery.application.port.out.DeliveryRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,30 +24,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeliveryService {
 
-    private final DeliveryRepository deliveryRepository;
+    private final DeliveryRepositoryPort deliveryRepository;
     private final RedisTemplate<String, String> redisTemplate;
     private final DeliveryStatusEventProducer deliveryStatusEventProducer;
 
     public void startDelivery(OrderPaidEvent event) {
+        Order order = event.getOrder();
 
-        // 배송 생성
         Delivery delivery = new Delivery();
-        delivery.setOrderId(event.getOrderId());
-        delivery.setUserId(event.getUserId());
-        delivery.setStoreId(event.getStoreId());
+        delivery.setOrderId(order.getOrderId());
+        delivery.setUserId(order.getUserId());
+        delivery.setStoreId(order.getStoreInfo().getStoreId());
         delivery.setStatus(DeliveryState.STARTED);
         delivery.setStartedDate(LocalDateTime.now());
 
         deliveryRepository.save(delivery);
 
-        String key = "delivery:status:" + event.getOrderId();
+        String key = "delivery:status:" + order.getOrderId();
         redisTemplate.opsForValue().set(key, DeliveryState.STARTED.toString(), Duration.ofHours(2));
 
-        DeliveryStatusMessage message = new DeliveryStatusMessage(event.getOrderId(), DeliveryState.STARTED.toString());
+        DeliveryStatusMessage message = new DeliveryStatusMessage(order.getOrderId(), DeliveryState.STARTED.toString());
         deliveryStatusEventProducer.sendDeliveryStatusEvent(message);
     }
 
-    public void sendStatusUpdate(Long orderId, String status) {
+    public void sendStatusUpdate(String orderId, String status) {
         String key = "delivery:status:" + orderId;
         redisTemplate.opsForValue().set(key, status, Duration.ofHours(2));
 
@@ -54,10 +55,9 @@ public class DeliveryService {
         deliveryStatusEventProducer.sendDeliveryStatusEvent(message);
     }
 
-    public void completeDelivery(Long orderId) {
-        // 배송 완료
-        List<Delivery> deliverys = deliveryRepository.getDeliveryByOrderId(orderId);
-        Delivery delivery = deliverys.get(0);
+    public void completeDelivery(String orderId) {
+        List<Delivery> deliveries = deliveryRepository.getDeliveryByOrderId(orderId);
+        Delivery delivery = deliveries.get(0);
         delivery.setStatus(DeliveryState.DELIVERED);
         delivery.setCompletedDate(LocalDateTime.now());
 
@@ -70,10 +70,9 @@ public class DeliveryService {
         deliveryStatusEventProducer.sendDeliveryStatusEvent(message);
     }
 
-    public void cancelDelivery(Long orderId) {
-
-        List<Delivery> deliverys = deliveryRepository.getDeliveryByOrderId(orderId);
-        Delivery delivery = deliverys.get(0);
+    public void cancelDelivery(String orderId) {
+        List<Delivery> deliveries = deliveryRepository.getDeliveryByOrderId(orderId);
+        Delivery delivery = deliveries.get(0);
         delivery.setStatus(DeliveryState.CANCELED);
         delivery.setCompletedDate(LocalDateTime.now());
 

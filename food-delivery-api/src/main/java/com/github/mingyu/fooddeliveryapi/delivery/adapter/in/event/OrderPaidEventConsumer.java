@@ -1,7 +1,7 @@
-package com.github.mingyu.fooddeliveryapi.domain.delivery.infrastructure.consumer;
+package com.github.mingyu.fooddeliveryapi.delivery.adapter.in.event;
 
-import com.github.mingyu.fooddeliveryapi.domain.delivery.application.DeliveryService;
-import com.github.mingyu.fooddeliveryapi.domain.order.event.OrderPaidEvent;
+import com.github.mingyu.fooddeliveryapi.delivery.application.service.DeliveryService;
+import com.github.mingyu.fooddeliveryapi.order.domain.event.OrderPaidEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

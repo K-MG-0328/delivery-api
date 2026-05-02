@@ -1,9 +1,9 @@
-package com.github.mingyu.fooddeliveryapi.domain.order.application;
+package com.github.mingyu.fooddeliveryapi.order.application.service;
 
-import com.github.mingyu.fooddeliveryapi.domain.order.application.dto.OrderParam;
-import com.github.mingyu.fooddeliveryapi.domain.order.domain.Order;
-import com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto.OrderCreateRequest;
-import com.github.mingyu.fooddeliveryapi.domain.order.presentation.dto.OrderDetailResponse;
+import com.github.mingyu.fooddeliveryapi.order.application.port.in.command.OrderParam;
+import com.github.mingyu.fooddeliveryapi.order.domain.Order;
+import com.github.mingyu.fooddeliveryapi.order.adapter.in.web.request.OrderCreateRequest;
+import com.github.mingyu.fooddeliveryapi.order.adapter.in.web.response.OrderDetailResponse;
 import org.mapstruct.Mapper;
 
 import java.util.List;
