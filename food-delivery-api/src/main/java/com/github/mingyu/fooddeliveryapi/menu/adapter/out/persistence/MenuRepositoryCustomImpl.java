@@ -1,0 +1,33 @@
+package com.github.mingyu.fooddeliveryapi.menu.adapter.out.persistence;
+
+import com.github.mingyu.fooddeliveryapi.menu.domain.Menu;
+import com.github.mingyu.fooddeliveryapi.menu.domain.QMenu;
+import com.github.mingyu.fooddeliveryapi.menu.domain.QMenuOption;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@RequiredArgsConstructor
+public class MenuRepositoryCustomImpl implements MenuRepositoryCustom {
+
+    private final JPAQueryFactory queryFactory;
+
+    @Override
+    public void bulkDelete(Menu menu) {
+        QMenu qMenu = QMenu.menu;
+        deleteMenuOption(menu);
+        queryFactory
+                .delete(qMenu)
+                .where(qMenu.menuId.eq(menu.getMenuId()))
+                .execute();
+    }
+
+    private void deleteMenuOption(Menu menu) {
+        QMenuOption qMenuOption = QMenuOption.menuOption;
+        queryFactory
+                .delete(qMenuOption)
+                .where(qMenuOption.menu.eq(menu))
+                .execute();
+    }
+}

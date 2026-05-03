@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  api-service:
+    image: mingyuuu/food-delivery-api:latest
+    networks:
+      - food-net
+    ports:
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: ingress
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback   # 헬스체크 실패 시 자동 롤백
+        monitor: 1m                # 모니터 기간(예: 1분) 동안 헬스체크 관찰
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 60s
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+networks:
+  food-net:
+    external: true
